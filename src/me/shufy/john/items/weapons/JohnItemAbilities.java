@@ -85,14 +85,17 @@ public class JohnItemAbilities implements JohnableItem {
                 }
                 break;
             case LUCK:
-                if (randomChance(0.05d)) {
-                    // try to find stronghold shit or treasure map shit
-                    CubicScan scan = new CubicScan(player.getLocation(), 500, Material.STONE_BRICKS);
-                    Location result = scan.result();
-                    if (result != null) {
-                        player.teleport(result);
-                    }
-                }
+
+
+                // TODO
+//                if (randomChance(0.05d)) {
+//                    // try to find stronghold shit or treasure map shit
+//                    CubicScan scan = new CubicScan(player.getLocation(), 500, Material.STONE_BRICKS);
+//                    Location result = scan.result();
+//                    if (result != null) {
+//                        player.teleport(result);
+//                    }
+//                }
                 break;
             case HOLINESS:
                 break;
