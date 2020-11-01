@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -50,6 +51,29 @@ public class JohnItemAbilities implements JohnableItem {
                 }
                 break;
             case LAZER:
+                World w = player.getWorld();
+                new BukkitRunnable() {
+                    int ticks = 0;
+                    @Override
+                    public void run() {
+                        if (!player.getWorld().equals(w)) this.cancel(); // they moved worlds since using the ability
+                        if (ticks >= 160) this.cancel(); // it's been more than 8 seconds
+                        Vector vDir = player.getLocation().getDirection();
+                        RayTraceResult traceResult = w.rayTraceBlocks(player.getEyeLocation(), vDir, 20d);
+                        if (traceResult != null) {
+                            if (traceResult.getHitBlockFace() != null)
+                                traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().setType(Material.FIRE); // sets the block on fire
+                            if (traceResult.getHitBlock() != null) {
+                                traceResult.getHitBlock().breakNaturally();
+                                w.createExplosion(traceResult.getHitBlock().getLocation(), 3.0f);
+                            }
+                            if (traceResult.getHitEntity() != null) {
+                                traceResult.getHitEntity().setVelocity(player.getLocation().getDirection());
+                                traceResult.getHitEntity().setFireTicks(20);
+                            }
+                        }
+                    }
+                }.runTaskTimer(plugin, 0, 1L); // aka every tick
                 break;
         }
     }
@@ -98,6 +122,7 @@ public class JohnItemAbilities implements JohnableItem {
 //                }
                 break;
             case LAZER:
+                onLeftClickBlock(itemAbility, player, playerInteractEvent); // same
                 break;
         }
     }
