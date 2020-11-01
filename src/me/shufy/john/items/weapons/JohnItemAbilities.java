@@ -49,7 +49,7 @@ public class JohnItemAbilities implements JohnableItem {
                     player.sendMessage(ChatColor.GREEN + "You have been blessed!");
                 }
                 break;
-            case HOLINESS:
+            case LAZER:
                 break;
         }
     }
@@ -97,7 +97,7 @@ public class JohnItemAbilities implements JohnableItem {
 //                    }
 //                }
                 break;
-            case HOLINESS:
+            case LAZER:
                 break;
         }
     }
@@ -141,7 +141,7 @@ public class JohnItemAbilities implements JohnableItem {
                 break;
             case LUCK:
                 break;
-            case HOLINESS:
+            case LAZER:
                 break;
         }
     }
@@ -187,7 +187,7 @@ public class JohnItemAbilities implements JohnableItem {
                 break;
             case LUCK:
                 break;
-            case HOLINESS:
+            case LAZER:
                 break;
         }
     }

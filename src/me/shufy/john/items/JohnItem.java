@@ -26,7 +26,7 @@ public class JohnItem {
     ItemAbility itemAbility;
 
     public enum ItemAbility {
-        NONE, TRAMPOLINE, AURA, LUCK, HOLINESS
+        NONE, TRAMPOLINE, AURA, LUCK, LAZER
     }
 
     public JohnItem(String itemName) {

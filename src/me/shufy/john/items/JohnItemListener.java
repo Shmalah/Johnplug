@@ -43,7 +43,9 @@ public class JohnItemListener implements Listener {
     public static final Main plugin = Main.getPlugin(Main.class);
 
     public JohnItemListener() {
-        Bukkit.getOnlinePlayers().forEach(player -> abilityCooldowns.putIfAbsent(player, 11));
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) abilityCooldowns.putIfAbsent(player, 11);
+        });
         cooldownsTimer = new BukkitRunnable() {
             @Override
             public void run() {
@@ -109,8 +111,8 @@ public class JohnItemListener implements Listener {
                     case PHYSICAL:
                         break;
                 }
-
-                abilityCooldowns.put(player, 11);
+                if (!player.getGameMode().equals(GameMode.CREATIVE))
+                    abilityCooldowns.put(player, 11);
             }
         }
     }
