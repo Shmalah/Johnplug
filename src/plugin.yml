@@ -1,0 +1,9 @@
+main: me.shufy.john.Main
+name: John
+version: 1.0
+api-version: 1.13
+author: shufy
+
+commands:
+  jdb:
+    description: john debug commands. do not fucking touch please
