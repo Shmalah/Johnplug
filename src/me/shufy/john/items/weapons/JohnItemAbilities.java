@@ -3,6 +3,7 @@ package me.shufy.john.items.weapons;
 import me.shufy.john.Main;
 import me.shufy.john.items.JohnItem;
 import me.shufy.john.items.JohnableItem;
+import me.shufy.john.util.CubicScan;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
+import static me.shufy.john.items.JohnItem.randomMaterial;
+import static me.shufy.john.items.JohnItem.randomMaterialWhichContains;
 import static me.shufy.john.util.JohnUtility.*;
 
 public class JohnItemAbilities implements JohnableItem {
@@ -30,13 +33,21 @@ public class JohnItemAbilities implements JohnableItem {
         switch (JohnItem.getItemAbility(heldItem)) {
             default:
             case NONE:
+                player.sendMessage(bold(ChatColor.GRAY) + "You can feel tears streaming down your face ;(");
                 break;
             case TRAMPOLINE:
                 onLeftClickAir(itemAbility, player, playerInteractEvent); // same
                 break;
             case AURA:
+                onLeftClickAir(itemAbility, player, playerInteractEvent);
                 break;
             case LUCK:
+                if (randomChance(0.10d)) {
+                    Material randOre = randomMaterialWhichContains("ore");
+                    Bukkit.getLogger().log(Level.INFO, "Attempted to set clicked block to " + randOre.name());
+                    playerInteractEvent.getClickedBlock().getRelative(0, -1, 0).setType(randOre);
+                    player.sendMessage(ChatColor.GREEN + "You have been blessed!");
+                }
                 break;
             case HOLINESS:
                 break;
@@ -48,6 +59,7 @@ public class JohnItemAbilities implements JohnableItem {
         switch (itemAbility) {
             default:
             case NONE:
+                onLeftClickBlock(itemAbility, player, playerInteractEvent);
                 break;
             case TRAMPOLINE:
                 player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, ThreadLocalRandom.current().nextFloat());
@@ -73,6 +85,14 @@ public class JohnItemAbilities implements JohnableItem {
                 }
                 break;
             case LUCK:
+                if (randomChance(0.05d)) {
+                    // try to find stronghold shit or treasure map shit
+                    CubicScan scan = new CubicScan(player.getLocation(), 500, Material.STONE_BRICKS);
+                    Location result = scan.result();
+                    if (result != null) {
+                        player.teleport(result);
+                    }
+                }
                 break;
             case HOLINESS:
                 break;
@@ -84,6 +104,7 @@ public class JohnItemAbilities implements JohnableItem {
         switch (itemAbility) {
             default:
             case NONE:
+                onLeftClickBlock(itemAbility, player, playerInteractEvent);
                 break;
             case TRAMPOLINE:
                 onRightClickAir(itemAbility, player, playerInteractEvent); // same
@@ -127,6 +148,7 @@ public class JohnItemAbilities implements JohnableItem {
         switch (itemAbility) {
             default:
             case NONE:
+                onLeftClickBlock(itemAbility, player, playerInteractEvent);
                 break;
             case TRAMPOLINE:
                 player.sendMessage(ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC + "Boing!! John trampoline");

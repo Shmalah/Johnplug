@@ -1,5 +1,6 @@
 package me.shufy.john.items;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,6 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static me.shufy.john.util.JohnUtility.*;
 
@@ -52,6 +57,13 @@ public class JohnItem {
         Material randMat = Material.values()[randomInt(Material.values().length)];
         while (!randMat.isItem()) randMat = Material.values()[randomInt(Material.values().length)];
         return randMat;
+    }
+    public static Material randomMaterialWhichContains(String contains) {
+        contains = contains.toLowerCase();
+        String finalContains = contains;
+        List<Material> materials = Arrays.stream(Material.values()).filter(m -> m.name().toLowerCase().contains(finalContains)).collect(Collectors.toList());
+        Bukkit.getLogger().log(Level.INFO, materials.stream().skip(randomInt(materials.size())).findFirst().get() + " is the item that john blessed");
+        return materials.stream().skip(randomInt(materials.size())).findFirst().get();
     }
     public static ItemStack makeJohnItem(ItemStack itemStack, String itemName) {
         ItemMeta itemMeta = itemStack.getItemMeta();
