@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -24,31 +25,16 @@ public class JohnItemAbilities implements JohnableItem {
     public static final Main plugin = Main.getPlugin(Main.class);
 
     @Override
-    public void onLeftClickBlock(JohnItem.ItemAbility itemAbility, Player player) {
+    public void onLeftClickBlock(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent) {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         switch (JohnItem.getItemAbility(heldItem)) {
             default:
             case NONE:
                 break;
             case TRAMPOLINE:
-                if (itemAbility.equals(Action.RIGHT_CLICK_AIR)) {
-                    player.sendMessage(ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC + "Boing!! John trampoline");
-                    player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, ThreadLocalRandom.current().nextFloat());
-                    player.setVelocity(new Vector(0, 1.5, 0));
-                } else if (itemAbility.equals(Action.LEFT_CLICK_AIR)) {
-                    player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, ThreadLocalRandom.current().nextFloat());
-                    player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 1f, ThreadLocalRandom.current().nextFloat());
-                    getClosestEntity(player.getLocation(), player).setVelocity(player.getLocation().getDirection().add(new Vector(0, 2, 0)).multiply(2));
-                }
+                onLeftClickAir(itemAbility, player, playerInteractEvent); // same
                 break;
             case AURA:
-                if (itemAbility.equals(Action.RIGHT_CLICK_AIR)) {
-
-                } else if (itemAbility.equals(Action.LEFT_CLICK_AIR)) {
-
-                } else if (itemAbility.equals(Action.RIGHT_CLICK_BLOCK)) {
-
-                }
                 break;
             case LUCK:
                 break;
@@ -58,12 +44,15 @@ public class JohnItemAbilities implements JohnableItem {
     }
 
     @Override
-    public void onLeftClickAir(JohnItem.ItemAbility itemAbility, Player player) {
+    public void onLeftClickAir(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent) {
         switch (itemAbility) {
             default:
             case NONE:
                 break;
             case TRAMPOLINE:
+                player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, ThreadLocalRandom.current().nextFloat());
+                player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 1f, ThreadLocalRandom.current().nextFloat());
+                getClosestEntity(player.getLocation(), player).setVelocity(player.getLocation().getDirection().add(new Vector(0, 2, 0)).multiply(2));
                 break;
             case AURA:
                 Location loc = player.getLocation();
@@ -91,14 +80,16 @@ public class JohnItemAbilities implements JohnableItem {
     }
 
     @Override
-    public void onRightClickBlock(JohnItem.ItemAbility itemAbility, Player player) {
+    public void onRightClickBlock(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent) {
         switch (itemAbility) {
             default:
             case NONE:
                 break;
             case TRAMPOLINE:
+                onRightClickAir(itemAbility, player, playerInteractEvent); // same
                 break;
             case AURA:
+                playerInteractEvent.setCancelled(true); // stop john item in hand from being placed so they dont lose it!
                 Location loc = player.getLocation();
                 ArrayList<Block> blocks = new ArrayList<>();
                 for (int y = -2; y < 5; y++) {
@@ -132,15 +123,18 @@ public class JohnItemAbilities implements JohnableItem {
     }
 
     @Override
-    public void onRightClickAir(JohnItem.ItemAbility itemAbility, Player player) {
+    public void onRightClickAir(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent) {
         switch (itemAbility) {
             default:
             case NONE:
                 break;
             case TRAMPOLINE:
+                player.sendMessage(ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC + "Boing!! John trampoline");
+                player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, ThreadLocalRandom.current().nextFloat());
+                player.setVelocity(new Vector(0, 1.5, 0));
                 break;
             case AURA:
-                BukkitTask auraTask;
+                //BukkitTask auraTask;
                 final LivingEntity[] target = {getClosestEntity(player.getLocation(), player)};
                 //auraTask =
                 new BukkitRunnable() {

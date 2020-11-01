@@ -1,10 +1,11 @@
 package me.shufy.john.items;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public interface JohnableItem {
-    void onLeftClickBlock(JohnItem.ItemAbility itemAbility, Player player);
-    void onLeftClickAir(JohnItem.ItemAbility itemAbility, Player player);
-    void onRightClickBlock(JohnItem.ItemAbility itemAbility, Player player);
-    void onRightClickAir(JohnItem.ItemAbility itemAbility, Player player);
+    void onLeftClickBlock(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent);
+    void onLeftClickAir(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent);
+    void onRightClickBlock(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent);
+    void onRightClickAir(JohnItem.ItemAbility itemAbility, Player player, PlayerInteractEvent playerInteractEvent);
 }

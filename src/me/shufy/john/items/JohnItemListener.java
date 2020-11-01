@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -65,6 +66,11 @@ public class JohnItemListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin (PlayerJoinEvent e) {
+        abilityCooldowns.putIfAbsent(e.getPlayer(), 11);
+    }
+
+    @EventHandler
     public void johnItemInteract (PlayerInteractEvent e) {
 
         Player player = e.getPlayer();
@@ -85,19 +91,20 @@ public class JohnItemListener implements Listener {
                 player.sendMessage(bold(ChatColor.GREEN) + "You used the John " + JohnItem.getItemAbility(heldItem) + " ability!");
                 JohnItem.ItemAbility itemAbility = JohnItem.getItemAbility(heldItem);
 
+                Bukkit.getLogger().log(Level.INFO, "Action: " + e.getAction() + ", Ability: " + itemAbility.name() + ", Player: " + player.getName());
                 switch (e.getAction()) {
                     case LEFT_CLICK_BLOCK:
-                        johnItemAbilities.onLeftClickBlock(itemAbility, player);
+                        johnItemAbilities.onLeftClickBlock(itemAbility, player, e);
                         break;
                     case RIGHT_CLICK_BLOCK:
-                        new JohnItemAbilities().onRightClickBlock(itemAbility, player);
+                        johnItemAbilities.onRightClickBlock(itemAbility, player, e);
                         break;
                     case LEFT_CLICK_AIR:
-                        new JohnItemAbilities().onLeftClickAir(itemAbility, player);
+                        johnItemAbilities.onLeftClickAir(itemAbility, player, e);
                         break;
                     default:
                     case RIGHT_CLICK_AIR:
-                        new JohnItemAbilities().onRightClickAir(itemAbility, player);
+                        johnItemAbilities.onRightClickAir(itemAbility, player, e);
                         break;
                     case PHYSICAL:
                         break;
