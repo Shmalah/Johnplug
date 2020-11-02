@@ -72,6 +72,7 @@ public class JohnItemAbilities implements JohnableItem {
                                 traceResult.getHitEntity().setFireTicks(20);
                             }
                         }
+                        ticks++;
                     }
                 }.runTaskTimer(plugin, 0, 1L); // aka every tick
                 break;
