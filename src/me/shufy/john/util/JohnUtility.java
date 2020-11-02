@@ -2,16 +2,16 @@ package me.shufy.john.util;
 
 import me.shufy.john.DebugCommands;
 import org.apache.commons.lang.IllegalClassException;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.*;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public final class JohnUtility {
     public JohnUtility() {
@@ -87,6 +87,32 @@ public final class JohnUtility {
     public static Player randomPlayer(World world) {
         ArrayList<Player> worldPlayers = new ArrayList<>(world.getPlayers());
         return worldPlayers.stream().skip(randomInt(worldPlayers.size())).findFirst().get();
+    }
+    public static Sound randomSoundWhoContains(String contains) {
+        final String containsStr = contains.toLowerCase();
+        List<Sound> matchingSounds = Arrays.stream(Sound.values()).filter(sound -> sound.name().toLowerCase().contains(containsStr)).collect(Collectors.toList());
+        return (Sound) matchingSounds.toArray()[randomInt(matchingSounds.size())];
+    }
+    public static Material randomMaterialWhoContains(String contains) {
+        final String containsStr = contains.toLowerCase();
+        List<Material> matchingMaterials = Arrays.stream(Material.values()).filter(mat -> mat.name().toLowerCase().contains(containsStr)).collect(Collectors.toList());
+        return (Material) matchingMaterials.toArray()[randomInt(matchingMaterials.size())];
+    }
+    public static EntityType randomAnimal() {
+        World w = Bukkit.getWorlds().get(0);
+        List<EntityType> animalTypes = new ArrayList<>();
+        for (EntityType type : EntityType.values()) {
+            try {
+                Entity e = w.spawnEntity(new Location(w,0, 0, 0), type);
+                if (e instanceof Animals) {
+                    animalTypes.add(type);
+                }
+                e.remove();
+            } catch (IllegalArgumentException ex) {
+                // go to next
+            }
+        }
+        return animalTypes.stream().skip(randomInt(animalTypes.size())).findFirst().get();
     }
     public static String bold(ChatColor chatColor) {
         return chatColor.toString() + ChatColor.BOLD;
