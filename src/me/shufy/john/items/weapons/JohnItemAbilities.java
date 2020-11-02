@@ -6,6 +6,7 @@ import me.shufy.john.items.JohnableItem;
 import me.shufy.john.util.CubicScan;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -56,16 +57,20 @@ public class JohnItemAbilities implements JohnableItem {
                     int ticks = 0;
                     @Override
                     public void run() {
+                        if (ticks >= 50) this.cancel();
                         if (!player.getWorld().equals(w)) this.cancel(); // they moved worlds since using the ability
-                        if (ticks >= 160) this.cancel(); // it's been more than 8 seconds
                         Vector vDir = player.getLocation().getDirection();
                         RayTraceResult traceResult = w.rayTraceBlocks(player.getEyeLocation(), vDir, 20d);
                         if (traceResult != null) {
+                            for (double i = 0.1d; i < traceResult.getHitPosition().length(); i++) {
+                                w.spawnParticle(Particle.WHITE_ASH, traceResult.getHitPosition().normalize().multiply(i).toLocation(w), 3);
+                            }
                             if (traceResult.getHitBlockFace() != null)
                                 traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().setType(Material.FIRE); // sets the block on fire
                             if (traceResult.getHitBlock() != null) {
-                                traceResult.getHitBlock().breakNaturally();
-                                w.createExplosion(traceResult.getHitBlock().getLocation(), 3.0f);
+                                for (BlockFace blockFace : BlockFace.values()) {
+                                    traceResult.getHitBlock().getRelative(blockFace).setType(Material.FIRE);
+                                }
                             }
                             if (traceResult.getHitEntity() != null) {
                                 traceResult.getHitEntity().setVelocity(player.getLocation().getDirection());

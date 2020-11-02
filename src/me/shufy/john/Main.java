@@ -2,7 +2,9 @@ package me.shufy.john;
 
 import me.shufy.john.biomes.JohnBiomeListener;
 import me.shufy.john.items.JohnItemListener;
+import me.shufy.john.items.weapons.JohnItemAbilities;
 import me.shufy.john.randomevents.RandomEventListener;
+import org.bukkit.GameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -15,6 +17,11 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RandomEventListener(), this);
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");
+        if (!getServer().getOnlinePlayers().isEmpty()) {
+            getServer().getOnlinePlayers().forEach(player -> {
+                JohnItemListener.abilityCooldowns.putIfAbsent(player, player.getGameMode().equals(GameMode.CREATIVE) ? 0 : 11);
+            });
+        }
     }
 
     @Override

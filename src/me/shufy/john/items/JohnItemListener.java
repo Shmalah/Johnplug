@@ -35,7 +35,7 @@ public class JohnItemListener implements Listener {
     */
     private static ArrayList<JohnItem> johnItems = new ArrayList<>();
 
-    static HashMap<Player, Integer> abilityCooldowns = new HashMap<>();
+    public static HashMap<Player, Integer> abilityCooldowns = new HashMap<>();
     static BukkitTask cooldownsTimer;
     static JohnItemAbilities johnItemAbilities = new JohnItemAbilities();
     BukkitTask auraTask;
