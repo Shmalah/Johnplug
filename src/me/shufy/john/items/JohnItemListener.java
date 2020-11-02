@@ -53,6 +53,9 @@ public class JohnItemListener implements Listener {
                     if (cooldown > 0) {
                         abilityCooldowns.put(player, cooldown - 1);
                     }
+                    if (itemInHandIsJohnItem(player)) {
+                        player.getWorld().spawnParticle(Particle.WHITE_ASH, player.getEyeLocation().add(0.2, -0.5, 0.2), 10);
+                    }
                 });
             }
         }.runTaskTimer(plugin, 0, 20L);
@@ -70,6 +73,18 @@ public class JohnItemListener implements Listener {
     @EventHandler
     public void onPlayerJoin (PlayerJoinEvent e) {
         abilityCooldowns.putIfAbsent(e.getPlayer(), 11);
+    }
+
+    public static boolean itemInHandIsJohnItem(Player player) {
+        try {
+            ItemStack heldItem = player.getInventory().getItemInMainHand();
+            if (itemHasLore(heldItem))
+                return heldItem.getItemMeta().getLore().get(1).contains("John Item");
+        } catch (NullPointerException ex) {
+            Bukkit.getLogger().log(Level.WARNING, ex.getMessage());
+            return false;
+        }
+        return false;
     }
 
     @EventHandler

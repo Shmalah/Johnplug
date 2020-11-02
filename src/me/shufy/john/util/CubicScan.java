@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 
+@Deprecated
 public class CubicScan {
     int blocks, area;
     Location origin, blockFound = null;
