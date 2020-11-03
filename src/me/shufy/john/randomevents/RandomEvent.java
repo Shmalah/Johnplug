@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.*;
 
@@ -34,6 +35,7 @@ public class RandomEvent {
         this.players = players;
         this.location = location;
         this.chance = chance;
+        Bukkit.getLogger().log(Level.INFO, "RandomEvent \"" + eventName + "\" has been constructed.");
         eventRunnable(); // start coin throw/event loop
     }
 
