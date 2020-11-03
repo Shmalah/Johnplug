@@ -31,6 +31,8 @@ public class Npc {
 
     private EntityPlayer npcPlayer;
 
+    boolean jumpscare = false;
+
     public Npc(String displayName, String uuid, Location spawnLocation) {
         this.displayName = displayName;
         this.uuid = uuid;
@@ -47,11 +49,26 @@ public class Npc {
         npcLoop().runTaskTimer(plugin, 0, 1L);
     }
 
+    public void lookAt(Location point) {
+        Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getEyeLocation(), point).normalize();
+        sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] { (float) Math.toDegrees(Math.atan2(vR.getZ(), vR.getX())), (float) Math.toDegrees(Math.asin(vR.getY())) }, PacketType.NPC_ROTATION);
+    }
+
+    public void moveStepped(Location location) {
+        Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getLocation(), location).normalize();
+        sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] { (double) vR.getX(), (double) vR.getY(), (double) vR.getZ() }, PacketType.NPC_MOVE);
+    }
+
+    public void destroy() {
+        sendNmsPackets(new ArrayList<>(Bukkit.getOnlinePlayers()), npcPlayer, new Object[]{}, PacketType.NPC_DELETION);
+    }
+
     private BukkitRunnable npcLoop() {
         return new BukkitRunnable() {
             @Override
             public void run() {
-
+                lookAt(getClosestPlayer(npcPlayer.getBukkitEntity()).getEyeLocation());
+                if (jumpscare) moveStepped(getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation());
             }
         };
     }

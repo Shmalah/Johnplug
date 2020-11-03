@@ -24,7 +24,7 @@ public class RandomNpcAppearance extends RandomEvent implements JohnableRandomEv
     @Override
     public void setup(Location location) {
         john = new Npc("John", "4523497a-d9af-4b8d-ae8a-33400fdb92d6", location);
-        setRunForTicks(randomInt(100, 150));
+        setRunForTicks(randomInt(5, 15));
         setEventWorld(getWorldWithMostPlayers());
         setPlayers(getEventWorld().getPlayers());
         setLocation(randomPlayer(getEventWorld()).getEyeLocation());
@@ -44,7 +44,7 @@ public class RandomNpcAppearance extends RandomEvent implements JohnableRandomEv
 
     @Override
     public void cleanup(Location location, Collection<Player> playersInvolved) {
-
+        john.destroy();
     }
 
 }

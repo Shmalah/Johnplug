@@ -5,6 +5,7 @@ import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;
+import me.shufy.john.randomevents.npc.NpcJoinListen;
 import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,6 +19,7 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JohnBiomeListener(), this);
         getServer().getPluginManager().registerEvents(new JohnItemListener(), this);
         getServer().getPluginManager().registerEvents(new RandomEventListener(), this);
+        getServer().getPluginManager().registerEvents(new NpcJoinListen(), this);
         AnimalAppear animalAppear = new AnimalAppear(); // starts random animal appear event
 
         // random johnable events
