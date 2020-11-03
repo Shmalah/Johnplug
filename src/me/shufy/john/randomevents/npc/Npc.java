@@ -5,16 +5,19 @@ import me.shufy.john.Main;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.logging.Level;
 
-import static me.shufy.john.util.JohnUtility.locationToString;
+import static me.shufy.john.util.JohnUtility.*;
 
 public class Npc {
 
@@ -32,6 +35,9 @@ public class Npc {
     public Npc(String name, UUID skin) {
         minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
         gameProfile = new GameProfile(skin, name);
+        for (NpcAbility value : NpcAbility.values()) {
+            abilityBooleanHashMap.putIfAbsent(value, false);
+        }
         npcLogicLoop().runTaskTimer(plugin, 0, 1L);
     }
 
@@ -63,20 +69,44 @@ public class Npc {
     public void moveTo(Location location) {
         if (!npcPlayer.getBukkitEntity().getWorld().equals(location.getWorld())) {
             Bukkit.getLogger().log(Level.SEVERE,
-                    "The Npc " + this.hashCode() + " cannot move to the location \"" + locationToString(location) + "\" because "
+                    "[METHOD moveTo] The Npc " + this.hashCode() + " cannot move to the location \"" + locationToString(location) + "\" because "
                             + this.hashCode() + " is in world " + npcPlayer.getBukkitEntity().getWorld().getName()
                             + " and the location provided is in world " + location.getWorld().getName()
             );
         } else {
             // figure out if npc player can use moverel packet
+            Vector vR = location.toVector().subtract(npcPlayer.getBukkitEntity().getLocation().toVector());
             boolean canMoverel = location.distance(npcPlayer.getBukkitEntity().getLocation()) < 8;
             if (canMoverel) {
                 // use move relative packet
-
+                sendPacket(PacketType.NPC_MOVE, location.getWorld().getPlayers(), new Object[] { vR.getX(), vR.getY(), vR.getZ() });
             } else {
                 // use teleport packet
-
+                npcPlayer.setLocation(location.getX(), location.getY(), location.getZ(), npcPlayer.yaw, npcPlayer.pitch);
+                sendPacket(PacketType.NPC_TELEPORT, location.getWorld().getPlayers());
             }
+        }
+    }
+
+    public void attack(LivingEntity livingEntity) {
+        if (livingEntity.getLocation().distance(npcPlayer.getBukkitEntity().getLocation()) > 3.0f) {
+            livingEntity.damage(1.5d, npcPlayer.getBukkitEntity());
+        } else {
+            npcPlayer.getBukkitEntity().attack(livingEntity);
+            sendPacket(PacketType.NPC_ARM_SWING, livingEntity.getWorld().getPlayers());
+        }
+    }
+
+    public void moveStepped(Location location) {
+        if (!npcPlayer.getBukkitEntity().getWorld().equals(location.getWorld())) {
+            Bukkit.getLogger().log(Level.SEVERE,
+                    "[METHOD moveStepped] The Npc " + this.hashCode() + " cannot move to the location \"" + locationToString(location) + "\" because "
+                            + this.hashCode() + " is in world " + npcPlayer.getBukkitEntity().getWorld().getName()
+                            + " and the location provided is in world " + location.getWorld().getName()
+            );
+        } else {
+            Vector vR = location.toVector().subtract(npcPlayer.getBukkitEntity().getLocation().toVector()).normalize(); // normalize into step (movement <= 1 unit)
+            sendPacket(PacketType.NPC_MOVE, location.getWorld().getPlayers(), new Object[] { vR.getX(), vR.getY(), vR.getZ() });
         }
     }
 
@@ -93,10 +123,38 @@ public class Npc {
             @Override
             public void run() {
                 if (isSpawnedIn()) {
-
+                    abilityBooleanHashMap.forEach((k, v) -> {
+                        if (v) doNpcAbility(k);
+                    });
                 }
             }
         };
+    }
+
+    private void doNpcAbility(NpcAbility npcAbility) {
+        switch (npcFilterMode) {
+            case CLOSEST_PLAYER_ONLY:
+                switch (npcAbility) {
+                    case ATTACK:
+                        attack(getClosestPlayer(npcPlayer.getBukkitEntity()));
+                        break;
+                    case FOLLOW:
+                        moveStepped(getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation());
+                        break;
+                }
+                break;
+            default:
+            case CLOSEST_PLAYER_OR_ENTITY:
+                switch (npcAbility) {
+                    case ATTACK:
+                        attack(getClosestEntity(npcPlayer.getBukkitEntity().getLocation()));
+                        break;
+                    case FOLLOW:
+                        moveStepped(getClosestEntity(npcPlayer.getBukkitEntity().getLocation()).getLocation());
+                        break;
+                }
+                break;
+        }
     }
 
     private void sendPacket(PacketType packetType, Collection<Player> players, Object[] packetArgs) {
@@ -154,6 +212,18 @@ public class Npc {
 
     public PlayerConnection getConnection(Player player) {
         return ((CraftPlayer)player).getHandle().playerConnection;
+    }
+
+    public void addAbility(NpcAbility npcAbility) {
+        abilityBooleanHashMap.put(npcAbility, true);
+    }
+
+    public void removeAbility(NpcAbility npcAbility) {
+        abilityBooleanHashMap.put(npcAbility, false);
+    }
+
+    public void removeAllAbilities() {
+        abilityBooleanHashMap.clear();
     }
 
 }
