@@ -79,6 +79,7 @@ public class Npc {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity out of range \"" + target.getName() + "\" : " + ex.getMessage());
             }
         }
+        sendNmsPackets(target.getWorld().getPlayers(), npcPlayer, new Object[] {0}, PacketType.NPC_ARM_SWING);
     }
 
     public void moveStepped(Location location) {
