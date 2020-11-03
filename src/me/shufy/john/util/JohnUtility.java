@@ -88,6 +88,9 @@ public final class JohnUtility {
         ArrayList<Player> worldPlayers = new ArrayList<>(world.getPlayers());
         return worldPlayers.stream().skip(randomInt(worldPlayers.size())).findFirst().get();
     }
+    public static double randomDouble() {
+        return ThreadLocalRandom.current().nextDouble();
+    }
     public static Sound randomSoundWhoContains(String contains) {
         final String containsStr = contains.toLowerCase();
         List<Sound> matchingSounds = Arrays.stream(Sound.values()).filter(sound -> sound.name().toLowerCase().contains(containsStr)).collect(Collectors.toList());

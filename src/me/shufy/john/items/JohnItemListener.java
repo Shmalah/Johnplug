@@ -54,7 +54,8 @@ public class JohnItemListener implements Listener {
                         abilityCooldowns.put(player, cooldown - 1);
                     }
                     if (itemInHandIsJohnItem(player)) {
-                        player.getWorld().spawnParticle(Particle.WHITE_ASH, player.getEyeLocation().add(0.2, -0.5, 0.2), 10);
+                        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.RED, 1);
+                        player.getWorld().spawnParticle(Particle.REDSTONE, player.getEyeLocation(), 5, randomDouble(), randomDouble(), randomDouble(), 1.0, dustOptions);
                     }
                 });
             }

@@ -60,12 +60,14 @@ public class JohnItemAbilities implements JohnableItem {
                         if (ticks >= 50) this.cancel();
                         if (!player.getWorld().equals(w)) this.cancel(); // they moved worlds since using the ability
                         Vector vDir = player.getLocation().getDirection();
+                        if (ticks % 10 == 0) player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 0.7f, ThreadLocalRandom.current().nextFloat());
                         RayTraceResult traceResult = w.rayTraceBlocks(player.getEyeLocation(), vDir, 20d);
                         if (traceResult != null) {
                             for (double i = 0.1d; i < traceResult.getHitPosition().length(); i++) {
                                 w.spawnParticle(Particle.WHITE_ASH, traceResult.getHitPosition().normalize().multiply(i).toLocation(w), 3);
                             }
                             if (traceResult.getHitBlockFace() != null)
+                                traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().breakNaturally();
                                 traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().setType(Material.FIRE); // sets the block on fire
                             if (traceResult.getHitBlock() != null) {
                                 for (BlockFace blockFace : BlockFace.values()) {

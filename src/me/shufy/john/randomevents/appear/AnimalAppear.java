@@ -30,7 +30,10 @@ public class AnimalAppear extends Appear implements JohnAppearable {
 
     @Override
     public void afterAppearance(Location playerLocation) {
-        randomAnimal.remove();
+        if (randomAnimal != null)
+            randomAnimal.remove();
+        if (playerLocation == null) return; // player probably left the server?
         playerLocation.getWorld().playSound(playerLocation, randomSoundWhoContains("ender"), 0.5f, ThreadLocalRandom.current().nextFloat());
     }
+
 }

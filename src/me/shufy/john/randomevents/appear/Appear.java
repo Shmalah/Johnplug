@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import static me.shufy.john.util.JohnUtility.*;
 
 public class Appear  {
+    boolean isRunning = false;
     int ticksToAppearFor;
     Location appearLocation;
     public Appear() {
@@ -24,35 +25,42 @@ public class Appear  {
             @Override
             public void run() {
                 if (randomChance(0.05d)) {
-                    Player target = null;
-                    for (World world : Bukkit.getWorlds()) {
-                        if (!world.getPlayers().isEmpty()) {
-                            target = randomPlayer(world);
-                            beforeAppearance(target);
-                            break;
-                        }
-                    }
-                    Bukkit.getLogger().log(Level.INFO, "Target: " + target.getName());
-                    Collection<Player> playersInSurvival = new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(p -> !p.getGameMode().equals(GameMode.CREATIVE)).collect(Collectors.toList());
-                    if (!playersInSurvival.isEmpty()) {
-                        ticksToAppearFor = randomInt(20, 70);
-                        Location randomLocation = new Location(target.getWorld(),
-                                target.getLocation().getX() + randomInt(10), target.getLocation().getY(), target.getLocation().getZ() + randomInt(10));
-                        randomLocation.setY(target.getWorld().getHighestBlockYAt(randomLocation.getBlockX(), randomLocation.getBlockZ()));
-                        appearLocation = randomLocation;
-                        duringAppearance(appearLocation);
-                    }
-                    Player finalTarget = target; // target is final
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (finalTarget.isDead() || !finalTarget.isOnline()) {
-                                afterAppearance(null);
-                            } else {
-                                afterAppearance(finalTarget.getLocation());
+                    if (!isRunning) {
+                        isRunning = true;
+                        Player target = null;
+                        for (World world : Bukkit.getWorlds()) {
+                            if (!world.getPlayers().isEmpty()) {
+                                target = randomPlayer(world);
+                                beforeAppearance(target);
+                                break;
                             }
                         }
-                    }.runTaskLater(JohnItemListener.plugin, ticksToAppearFor);
+                        if (target != null)
+                            Bukkit.getLogger().log(Level.INFO, "Target: " + target.getName());
+                        Collection<Player> playersInSurvival = new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(p -> !p.getGameMode().equals(GameMode.CREATIVE)).collect(Collectors.toList());
+                        if (!playersInSurvival.isEmpty()) {
+                            ticksToAppearFor = randomInt(20, 70);
+                            Location randomLocation = new Location(target.getWorld(),
+                                    target.getLocation().getX() + randomInt(10), target.getLocation().getY(), target.getLocation().getZ() + randomInt(10));
+                            randomLocation.setY(target.getWorld().getHighestBlockYAt(randomLocation.getBlockX(), randomLocation.getBlockZ()));
+                            appearLocation = randomLocation;
+                            duringAppearance(appearLocation);
+                        }
+                        if (target != null) {
+                            Player finalTarget = target; // target is final
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (finalTarget.isDead() || !finalTarget.isOnline()) {
+                                        afterAppearance(null);
+                                    } else {
+                                        afterAppearance(finalTarget.getLocation());
+                                    }
+                                    isRunning = false;
+                                }
+                            }.runTaskLater(JohnItemListener.plugin, ticksToAppearFor);
+                        }
+                    }
                 }
             }
         }.runTaskTimer(JohnItemListener.plugin, 0, 200L);
