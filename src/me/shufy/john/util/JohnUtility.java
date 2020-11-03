@@ -183,6 +183,8 @@ public final class JohnUtility {
                 packets.add(new PacketPlayOutEntityHeadRotation(npc, (byte) (npc.yaw * 256 / 360)));
                 break;
             case NPC_ARM_SWING:
+                int armToSwing = (int) packetArgs[0];
+                packets.add(new PacketPlayOutAnimation(npc, armToSwing)); // 0 aka main hand, 1 aka off-hand ?
                 break;
             case NPC_PLAYER_JOIN:
                 Npc.allNpcs.forEach(NPC -> sendPackets(PacketType.NPC_CREATION, npc, player, new Object[]{}));

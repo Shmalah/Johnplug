@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import me.shufy.john.Main;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
@@ -41,11 +42,10 @@ public class Npc {
         this.spawnLocation = spawnLocation;
 
         MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer nmsWorld = ((CraftWorld)Bukkit.getWorld("world")).getHandle(); // Change "world" to the world the NPC should be spawned in.
-        GameProfile gameProfile = new GameProfile(UUID.fromString(uuid), displayName); // Change "playername" to the name the NPC should have, max 16 characters.
-        npcPlayer = new EntityPlayer(nmsServer, nmsWorld, gameProfile, new PlayerInteractManager(nmsWorld)); // This will be the EntityPlayer (NPC) we send with the sendNPCPacket method.
+        WorldServer nmsWorld = ((CraftWorld)Bukkit.getWorld("world")).getHandle();
+        GameProfile gameProfile = new GameProfile(UUID.fromString(uuid), displayName);
+        npcPlayer = new EntityPlayer(nmsServer, nmsWorld, gameProfile, new PlayerInteractManager(nmsWorld));
         npcPlayer.setLocation(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ(), spawnLocation.getYaw(), spawnLocation.getPitch());
-
     }
 
     public void lookAt(Location point) {
@@ -57,18 +57,27 @@ public class Npc {
 
     public void attack() {
         LivingEntity target = getClosestEntity(npcPlayer.getBukkitEntity().getLocation());
+        if (target instanceof Player) {
+            if(!((Player) target).getGameMode().equals(GameMode.SURVIVAL)) {
+                return; // the target is not in survival mode, so john will not attempt to attack, as effort would be futile and thus a waste of precious john energy.
+            }
+        }
         double distanceToTarget = target.getLocation().toVector().subtract(npcPlayer.getBukkitEntity().getLocation().toVector()).length();
         if (distanceToTarget <= 3.0d) {
             try {
                 npcPlayer.getBukkitEntity().attack(target);
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity " + target.getName() + ": " + ex.getMessage());
+                Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity who is in range \"" + target.getName() + "\" : " + ex.getMessage());
             }
         } else {
-            if (npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null)
-                target.damage(npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue(), npcPlayer.getBukkitEntity());
-            else
-                target.damage(1.5d, npcPlayer.getBukkitEntity());
+            try {
+                if (npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null)
+                    target.damage(npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue(), npcPlayer.getBukkitEntity());
+                else
+                    target.damage(1.5d, npcPlayer.getBukkitEntity());
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity out of range \"" + target.getName() + "\" : " + ex.getMessage());
+            }
         }
     }
 
@@ -78,6 +87,9 @@ public class Npc {
     }
 
     public void moveTpStepped() {
+        if (!getClosestPlayer(npcPlayer.getBukkitEntity()).getGameMode().equals(GameMode.SURVIVAL)) {
+            return; // don't move towards players who are in creative for now..
+        }
         Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getLocation(), getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation()).normalize().multiply(0.2);
         npcPlayer.setLocation(npcPlayer.locX()+vR.getX(), npcPlayer.locY()+vR.getY(), npcPlayer.locZ()+vR.getZ(), npcPlayer.yaw, npcPlayer.pitch);
         sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] {  }, PacketType.NPC_TELEPORT);
@@ -104,10 +116,12 @@ public class Npc {
             public void run() {
                 try {
                     lookAt(getClosestPlayer(npcPlayer.getBukkitEntity()).getEyeLocation());
-                    if (jumpscare)
+                    if (jumpscare) {
                         moveStepped(getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation());
-                    else
+                    } else {
                         moveTpStepped();
+                        attack();
+                    }
                 } catch (Exception ex) {
                     if (ticks % 20 == 0) {
                         Bukkit.getLogger().log(Level.SEVERE, "NpcLoop caught an exception: " + ex.getMessage());
@@ -120,7 +134,6 @@ public class Npc {
                         }.runTaskLater(plugin, 20-ticks);
                     }
                 }
-
                 ticks++;
             }
         };
