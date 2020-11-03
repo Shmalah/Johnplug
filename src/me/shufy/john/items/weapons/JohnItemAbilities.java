@@ -7,6 +7,7 @@ import me.shufy.john.util.CubicScan;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -117,7 +118,10 @@ public class JohnItemAbilities implements JohnableItem {
                 }
                 break;
             case LUCK:
-
+                if (randomChance(0.05d)) {
+                    player.sendMessage(bold(ChatColor.GREEN) + "You feel a leprechaun ticks your insides."); // lol
+                    player.getInventory().addItem(new ItemStack(Material.NETHER_PORTAL));
+                }
                 break;
             case LAZER:
                 onLeftClickBlock(itemAbility, player, playerInteractEvent); // same

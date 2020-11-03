@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class DebugCommands implements CommandExecutor {
 
-    public static boolean debugMode = true;
+    public static boolean debugMode = false;
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {

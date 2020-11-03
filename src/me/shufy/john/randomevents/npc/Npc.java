@@ -2,6 +2,8 @@ package me.shufy.john.randomevents.npc;
 
 import com.mojang.authlib.GameProfile;
 import me.shufy.john.Main;
+import me.shufy.john.util.JohnUtility;
+import me.shufy.john.util.YawPitch;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -50,9 +52,8 @@ public class Npc {
 
     public void lookAt(Location point) {
         Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getEyeLocation(), point).normalize();
-        float yaw = (float) Math.toDegrees(Math.atan2(vR.getZ(), vR.getX()))+90, pitch = (float) Math.toDegrees(Math.asin(vR.getY()))*-1;
-        //Bukkit.getLogger().log(Level.INFO, "NPC " + this.hashCode() + " YAW/PITCH: " + yaw + " / " + pitch);
-        sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] { yaw, pitch }, PacketType.NPC_ROTATION);
+        YawPitch johnLookDir = JohnUtility.yawPitchFromVector(vR);
+        sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] { johnLookDir.yaw, johnLookDir.pitch }, PacketType.NPC_ROTATION);
     }
 
     public void attack() {
@@ -65,21 +66,12 @@ public class Npc {
         double distanceToTarget = target.getLocation().toVector().subtract(npcPlayer.getBukkitEntity().getLocation().toVector()).length();
         if (distanceToTarget <= 3.0d) {
             try {
-                npcPlayer.getBukkitEntity().attack(target);
+                target.damage(2.0, npcPlayer.getBukkitEntity());
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity who is in range \"" + target.getName() + "\" : " + ex.getMessage());
             }
-        } else {
-            try {
-                if (npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null)
-                    target.damage(npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue(), npcPlayer.getBukkitEntity());
-                else
-                    target.damage(1.5d, npcPlayer.getBukkitEntity());
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity out of range \"" + target.getName() + "\" : " + ex.getMessage());
-            }
+            sendNmsPackets(target.getWorld().getPlayers(), npcPlayer, new Object[] {0}, PacketType.NPC_ARM_SWING);
         }
-        sendNmsPackets(target.getWorld().getPlayers(), npcPlayer, new Object[] {0}, PacketType.NPC_ARM_SWING);
     }
 
     public void moveStepped(Location location) {
@@ -116,6 +108,11 @@ public class Npc {
             @Override
             public void run() {
                 try {
+                    if (!Bukkit.getOnlinePlayers().stream().anyMatch(player -> !player.isDead())) {
+                        // if everybody on the server is dead then there's no purpose to john's life
+                        destroy();
+                        this.cancel();
+                    }
                     lookAt(getClosestPlayer(npcPlayer.getBukkitEntity()).getEyeLocation());
                     if (jumpscare) {
                         moveStepped(getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation());
@@ -125,14 +122,8 @@ public class Npc {
                     }
                 } catch (Exception ex) {
                     if (ticks % 20 == 0) {
-                        Bukkit.getLogger().log(Level.SEVERE, "NpcLoop caught an exception: " + ex.getMessage());
-                    } else {
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                Bukkit.getLogger().log(Level.SEVERE, "NpcLoop caught an exception: " + ex.getMessage());
-                            }
-                        }.runTaskLater(plugin, 20-ticks);
+                        if (allNpcs.contains(Npc.this) && !Npc.this.npcLoopTask.isCancelled())
+                            Bukkit.getLogger().log(Level.SEVERE, "NpcLoop caught an exception: " + ex.getMessage());
                     }
                 }
                 ticks++;

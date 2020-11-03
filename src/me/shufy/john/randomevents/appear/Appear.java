@@ -19,6 +19,7 @@ import static me.shufy.john.util.JohnUtility.*;
 public class Appear  {
     boolean isRunning = false;
     int ticksToAppearFor;
+    String targetName;
     Location appearLocation;
     public Appear() {
         new BukkitRunnable() {
@@ -36,10 +37,15 @@ public class Appear  {
                             }
                         }
                         if (target != null)
+                            targetName = target.getName();
                             Bukkit.getLogger().log(Level.INFO, "Target: " + target.getName());
                         Collection<Player> playersInSurvival = new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(p -> !p.getGameMode().equals(GameMode.CREATIVE)).collect(Collectors.toList());
                         if (!playersInSurvival.isEmpty()) {
                             ticksToAppearFor = randomInt(20, 70);
+                            if (target == null) {
+                                Bukkit.getLogger().log(Level.FINE, String.format("player \"%s\" died or left the server before the event could happen", targetName));
+                                return; // player died or left the server before the event could happen..
+                            }
                             Location randomLocation = new Location(target.getWorld(),
                                     target.getLocation().getX() + randomInt(10), target.getLocation().getY(), target.getLocation().getZ() + randomInt(10));
                             randomLocation.setY(target.getWorld().getHighestBlockYAt(randomLocation.getBlockX(), randomLocation.getBlockZ()));

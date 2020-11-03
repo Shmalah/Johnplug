@@ -8,6 +8,8 @@ import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
@@ -160,7 +162,7 @@ public final class JohnUtility {
     private static void sendPackets(PacketType packetType, EntityPlayer npc, Player player, Object[] packetArgs) {
         ArrayList<Packet<?>> packets = new ArrayList<>();
         switch (packetType) {
-            case NPC_MOVE:
+            case NPC_MOVE: // this never works
                 double x = (double)packetArgs[0], y = (double)packetArgs[1], z = (double)packetArgs[2];
                 packets.add(new PacketPlayOutEntity.PacketPlayOutRelEntityMove(npc.getId(), (short)(x * 4096), (short)(y * 4096), (short)(z * 4096), true));
                 break;
@@ -192,6 +194,22 @@ public final class JohnUtility {
         }
         if (!packets.isEmpty())
             for (Packet<?> packet : packets) ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+    }
+    public static YawPitch yawPitchFromVector(Vector vector) {
+        float yaw = (float) Math.toDegrees(Math.atan2(vector.getZ(), vector.getX()))-90, pitch = (float) Math.toDegrees(Math.asin(vector.getY()))*-1;
+        return new YawPitch(yaw, pitch);
+    }
+    /**
+     * <p>Creates a default length-by-height 4 x 4 nether portal.</p>
+     * @param frameLocation
+     * <p>Refers to where the bottom left corner of the portal frame will reside when created.</p>
+     * @param frontFacingDirection
+     * <p>The direction that the front of the portal will face when created</p>
+     * @param fillCorners
+     * <p>During creation, whether to fill the corners of the nether portal with obsidian or to keep them empty</p>
+     */
+    public static void createNetherPortal(Location frameLocation, BlockFace frontFacingDirection, boolean fillCorners) {
+
     }
     public static String bold(ChatColor chatColor) {
         return chatColor.toString() + ChatColor.BOLD;

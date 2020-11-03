@@ -1,5 +1,6 @@
 package me.shufy.john.randomevents.npc.events;
 
+import me.shufy.john.DebugCommands;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEvent;
 import me.shufy.john.randomevents.npc.Npc;

@@ -1,6 +1,8 @@
 package me.shufy.john.randomevents;
 
+import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
+import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static me.shufy.john.util.JohnUtility.*;
 
@@ -45,7 +48,12 @@ public class RandomEvent {
             public void run() {
                 if (randomChance(chance)) {
                     if (!eventRunning) {
-                        if (!Bukkit.getOnlinePlayers().isEmpty()) { // there has to be players online to actually do the event DINGUS
+                        if (!Bukkit.getOnlinePlayers().isEmpty() && Bukkit.getOnlinePlayers().stream().anyMatch(player -> !player.isDead())) { // there has to be players online AND ALIVE to actually do the event DINGUS
+                            if (RandomEvent.this instanceof RandomNpcAppearance) {
+                                if (DebugCommands.debugMode) {
+                                    return; // i dont need this npc appearance jumpscare event running every second..
+                                }
+                            }
                             eventRunning = true;
                             if (location == null)
                                 location = randomPlayer(Bukkit.getWorlds().get(0)).getLocation(); // random player in default world (there may be none)
