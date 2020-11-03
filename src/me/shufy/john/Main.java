@@ -6,6 +6,7 @@ import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;
 import me.shufy.john.randomevents.npc.NpcJoinListen;
+import me.shufy.john.randomevents.npc.events.JohnNpcChase;
 import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -24,6 +25,7 @@ public class Main extends JavaPlugin {
 
         // random johnable events
         JohnableRandomEvent johnNpcAppear = new RandomNpcAppearance("john npc appear", null, null, 0.05d);
+        JohnableRandomEvent johnNpcChase = new JohnNpcChase("john npc chase he wants you", null, null, 0.10d);
 
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");

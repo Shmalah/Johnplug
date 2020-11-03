@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public final class JohnUtility {
+    public static final UUID JOHN_UUID = UUID.fromString("4523497a-d9af-4b8d-ae8a-33400fdb92d6");
     public JohnUtility() {
       //  throw new IllegalClassException("A non static instance of JohnUtility was created.. JohnUtility is supposed to be a static final class.");
     }
