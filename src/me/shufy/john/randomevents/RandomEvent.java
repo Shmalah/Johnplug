@@ -3,6 +3,7 @@ package me.shufy.john.randomevents;
 import me.shufy.john.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -19,7 +20,10 @@ public class RandomEvent {
     String eventName;
     public static final Main plugin = Main.getPlugin(Main.class);
     BukkitTask eventTimer;
+
     private Collection<Player> players;
+
+    World eventWorld;
     private Location location;
     private int runForTicks = -1;
     double chance;
@@ -41,13 +45,15 @@ public class RandomEvent {
                     if (!eventRunning) {
                         if (!Bukkit.getOnlinePlayers().isEmpty()) { // there has to be players online to actually do the event DINGUS
                             eventRunning = true;
+                            if (location == null)
+                                location = randomPlayer(Bukkit.getWorlds().get(0)).getLocation(); // random player in default world (there may be none)
+                            setup(location);
                             if (runForTicks == -1)
                                 setRunForTicks(60); // 60 ticks is the default event run time, so set it if the user hasn't overridden it
                             if (players == null)
                                 players = new ArrayList<>(Bukkit.getOnlinePlayers()); // default is ALL PLAYERS in the entire server
-                            if (location == null)
-                                location = randomPlayer(Bukkit.getWorlds().get(0)).getLocation(); // random player in default world (there may be none)
-                            setup(location);
+                            if (eventWorld == null);
+                                eventWorld = location.getWorld(); // set world of location
                             execution(players);
                             new BukkitRunnable() {
                                 @Override
@@ -100,4 +106,37 @@ public class RandomEvent {
     public void setRunForTicks(int runForTicks) {
         this.runForTicks = runForTicks;
     }
+
+    public static Main getPlugin() {
+        return plugin;
+    }
+
+    public Collection<Player> getPlayers() {
+        return players;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setPlayers(Collection<Player> players) {
+        this.players = players;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setChance(double chance) {
+        this.chance = chance;
+    }
+
+    public void setEventWorld(World eventWorld) {
+        this.eventWorld = eventWorld;
+    }
+
+    public World getEventWorld() {
+        return eventWorld;
+    }
+
 }

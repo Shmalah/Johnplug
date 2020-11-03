@@ -5,7 +5,7 @@ import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;
-import me.shufy.john.randomevents.npc.RandomNpcAppearance;
+import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
 import org.bukkit.GameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 

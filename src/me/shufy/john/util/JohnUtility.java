@@ -117,6 +117,22 @@ public final class JohnUtility {
         }
         return animalTypes.stream().skip(randomInt(animalTypes.size())).findFirst().get();
     }
+    public static World getWorldWithMostPlayers() {
+        World mostPlayers = null;
+        for (World world : Bukkit.getWorlds()) {
+           if (mostPlayers == null) {
+               mostPlayers = world;
+               continue;
+           }
+           if (world.getPlayers().size() > mostPlayers.getPlayers().size()) {
+               mostPlayers = world;
+           }
+        }
+        return mostPlayers;
+    }
+    public static String locationToString(Location location) {
+        return location.getX() + " " + location.getY() + " " + location.getZ();
+    }
     public static String bold(ChatColor chatColor) {
         return chatColor.toString() + ChatColor.BOLD;
     }
