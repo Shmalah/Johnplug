@@ -169,7 +169,9 @@ public final class JohnUtility {
                 break;
             case NPC_ROTATION:
                 float yaw = (float)packetArgs[0], pitch = (float)packetArgs[1];
+                npc.yaw = yaw;
                 packets.add(new PacketPlayOutEntityHeadRotation(npc, (byte)(yaw * 256 / 360)));
+                npc.pitch = pitch;
                 packets.add(new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte)(yaw * 256 / 360), (byte)(pitch * 256 / 360), true));
                 break;
             case NPC_DELETION:

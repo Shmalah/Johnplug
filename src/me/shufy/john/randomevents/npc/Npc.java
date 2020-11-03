@@ -50,13 +50,26 @@ public class Npc {
 
     public void lookAt(Location point) {
         Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getEyeLocation(), point).normalize();
-        sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] { (float) Math.toDegrees(Math.atan2(vR.getZ(), vR.getX()))-90, (float) Math.toDegrees(Math.asin(vR.getY()))*-1 }, PacketType.NPC_ROTATION);
+        float yaw = (float) Math.toDegrees(Math.atan2(vR.getZ(), vR.getX()))+90, pitch = (float) Math.toDegrees(Math.asin(vR.getY()))*-1;
+        //Bukkit.getLogger().log(Level.INFO, "NPC " + this.hashCode() + " YAW/PITCH: " + yaw + " / " + pitch);
+        sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] { yaw, pitch }, PacketType.NPC_ROTATION);
     }
 
-    // TODO implement john attack
     public void attack() {
-       // uncomment and finish
-        // if (getClosestEntity(npcPlayer.getBukkitEntity().getLocation()).getLocation().distance(npcPlayer.getBukkitEntity().getLocation()) > )
+        LivingEntity target = getClosestEntity(npcPlayer.getBukkitEntity().getLocation());
+        double distanceToTarget = target.getLocation().toVector().subtract(npcPlayer.getBukkitEntity().getLocation().toVector()).length();
+        if (distanceToTarget <= 3.0d) {
+            try {
+                npcPlayer.getBukkitEntity().attack(target);
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to attack entity " + target.getName() + ": " + ex.getMessage());
+            }
+        } else {
+            if (npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null)
+                target.damage(npcPlayer.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue(), npcPlayer.getBukkitEntity());
+            else
+                target.damage(1.5d, npcPlayer.getBukkitEntity());
+        }
     }
 
     public void moveStepped(Location location) {
