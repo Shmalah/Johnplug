@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="John Plugin Base:jar">
+    <output-path>$USER_HOME$/Desktop/October/spigot test server/plugins</output-path>
+    <root id="archive" name="John Plugin Base.jar">
+      <element id="module-output" name="John Plugin Base" />
+    </root>
+  </artifact>
+</component>
