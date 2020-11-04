@@ -43,6 +43,6 @@ public class JohnNpcChase extends RandomEvent implements JohnableRandomEvent {
 
     @Override
     public void cleanup(Location location, Collection<Player> playersInvolved) {
-        john.destroy();
+        john.destroy(false);
     }
 }

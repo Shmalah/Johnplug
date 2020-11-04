@@ -1,6 +1,5 @@
 package me.shufy.john.randomevents.npc.events;
 
-import me.shufy.john.DebugCommands;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEvent;
 import me.shufy.john.randomevents.npc.Npc;
@@ -47,7 +46,7 @@ public class RandomNpcAppearance extends RandomEvent implements JohnableRandomEv
 
     @Override
     public void cleanup(Location location, Collection<Player> playersInvolved) {
-        john.destroy();
+        john.destroy(false);
     }
 
 }

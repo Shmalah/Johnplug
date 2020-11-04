@@ -98,12 +98,12 @@ public class Npc {
         allNpcs.add(this);
     }
 
-    public void destroy() {
+    public void destroy(boolean isOnDisable) {
         if (npcLoopTask != null)
             if (!npcLoopTask.isCancelled())
                 npcLoopTask.cancel();
         sendNmsPackets(new ArrayList<>(Bukkit.getOnlinePlayers()), npcPlayer, new Object[]{}, PacketType.NPC_DELETION);
-        allNpcs.remove(this);
+        if (!isOnDisable) allNpcs.remove(this);
     }
 
     private BukkitRunnable npcLoop() {
@@ -114,7 +114,7 @@ public class Npc {
                 try {
                     if (!Bukkit.getOnlinePlayers().stream().anyMatch(player -> !player.isDead())) {
                         // if everybody on the server is dead then there's no purpose to john's life
-                        destroy();
+                        destroy(false);
                         this.cancel();
                     }
                     lookAt(getClosestPlayer(npcPlayer.getBukkitEntity()).getEyeLocation());

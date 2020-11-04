@@ -5,11 +5,12 @@ import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;
+import me.shufy.john.randomevents.challenges.mlg.MlgChallenge;
+import me.shufy.john.randomevents.npc.JohnChallenge;
 import me.shufy.john.randomevents.npc.Npc;
 import me.shufy.john.randomevents.npc.NpcJoinListen;
 import me.shufy.john.randomevents.npc.events.JohnNpcChase;
 import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,6 +29,9 @@ public class Main extends JavaPlugin {
         JohnableRandomEvent johnNpcAppear = new RandomNpcAppearance("john npc appear", null, null, 0.05d);
         JohnableRandomEvent johnNpcChase = new JohnNpcChase("john npc chase he wants you", null, null, 0.10d);
 
+        // john challenges
+        JohnChallenge mlgChallenge = new MlgChallenge();
+
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");
         if (!getServer().getOnlinePlayers().isEmpty()) {
@@ -39,7 +43,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         if (!Npc.allNpcs.isEmpty())
-            Npc.allNpcs.forEach(Npc::destroy);
+            Npc.allNpcs.forEach(NPC -> NPC.destroy(true));
         Npc.allNpcs.clear();
         getLogger().log(Level.WARNING, "The John plugin has been disabled!");
     }
