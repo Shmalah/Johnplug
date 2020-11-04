@@ -3,12 +3,9 @@ package me.shufy.john.items;
 import me.shufy.john.Main;
 import me.shufy.john.items.weapons.JohnItemAbilities;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,13 +13,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.*;
@@ -79,8 +72,12 @@ public class JohnItemListener implements Listener {
     public static boolean itemInHandIsJohnItem(Player player) {
         try {
             ItemStack heldItem = player.getInventory().getItemInMainHand();
-            if (itemHasLore(heldItem))
-                return heldItem.getItemMeta().getLore().get(1).contains("John Item");
+            if (itemHasLore(heldItem)) {
+                if (heldItem.getItemMeta().getLore().size() > 1)
+                    return heldItem.getItemMeta().getLore().get(1).contains("John Item");
+                else
+                    return false;
+            }
         } catch (NullPointerException ex) {
             Bukkit.getLogger().log(Level.WARNING, ex.getMessage());
             return false;
@@ -96,6 +93,7 @@ public class JohnItemListener implements Listener {
 
         if (itemHasLore(heldItem)) {
             //Bukkit.getLogger().log(Level.INFO, heldItem.getType().name() + " has lore :3");
+            if (heldItem.getItemMeta().getLore().size() > 1)
             if (heldItem.getItemMeta().getLore().get(1).contains("John Item")) {
 
                 Bukkit.getLogger().log(Level.INFO, heldItem.getItemMeta().getDisplayName() + " is a john item! Player's cooldown: " + abilityCooldowns.get(player));

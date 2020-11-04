@@ -1,5 +1,6 @@
 package me.shufy.john;
 
+import me.shufy.john.items.stupid.JohnBoat;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -24,6 +25,9 @@ public class DebugCommands implements CommandExecutor {
                         case "debugmode":
                             debugMode = !debugMode;
                             player.sendMessage("Debug mode is now: " + debugMode);
+                            break;
+                        case "johnboat":
+                            player.getInventory().addItem(JohnBoat.johnBoat());
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);
