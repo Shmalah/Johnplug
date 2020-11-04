@@ -5,6 +5,7 @@ import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;
+import me.shufy.john.randomevents.npc.Npc;
 import me.shufy.john.randomevents.npc.NpcJoinListen;
 import me.shufy.john.randomevents.npc.events.JohnNpcChase;
 import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
@@ -35,9 +36,11 @@ public class Main extends JavaPlugin {
             });
         }
     }
-
     @Override
     public void onDisable() {
+        if (!Npc.allNpcs.isEmpty())
+            Npc.allNpcs.forEach(Npc::destroy);
+        Npc.allNpcs.clear();
         getLogger().log(Level.WARNING, "The John plugin has been disabled!");
     }
 }

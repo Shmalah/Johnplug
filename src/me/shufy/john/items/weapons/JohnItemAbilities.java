@@ -3,7 +3,7 @@ package me.shufy.john.items.weapons;
 import me.shufy.john.Main;
 import me.shufy.john.items.JohnItem;
 import me.shufy.john.items.JohnableItem;
-import me.shufy.john.util.CubicScan;
+import me.shufy.john.util.ParticleRay;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import static me.shufy.john.items.JohnItem.randomMaterial;
 import static me.shufy.john.items.JohnItem.randomMaterialWhichContains;
 import static me.shufy.john.util.JohnUtility.*;
+import static org.bukkit.ChatColor.RED;
 
 public class JohnItemAbilities implements JohnableItem {
 
@@ -64,8 +65,10 @@ public class JohnItemAbilities implements JohnableItem {
                         if (ticks % 10 == 0) player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 0.7f, ThreadLocalRandom.current().nextFloat());
                         RayTraceResult traceResult = w.rayTraceBlocks(player.getEyeLocation(), vDir, 20d);
                         if (traceResult != null) {
+                            ParticleRay particleRay = new ParticleRay(player.getEyeLocation(), player.getLocation().getDirection(), 20, Color.RED, 1);
                             for (double i = 0.1d; i < traceResult.getHitPosition().length(); i++) {
                                 w.spawnParticle(Particle.WHITE_ASH, traceResult.getHitPosition().normalize().multiply(i).toLocation(w), 3);
+                                particleRay.draw();
                             }
                             if (traceResult.getHitBlockFace() != null)
                                 traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().breakNaturally();
@@ -118,9 +121,9 @@ public class JohnItemAbilities implements JohnableItem {
                 }
                 break;
             case LUCK:
-                if (randomChance(0.05d)) {
+                if (randomChance(0.04d)) {
                     player.sendMessage(bold(ChatColor.GREEN) + "You feel a leprechaun ticks your insides."); // lol
-                    player.getInventory().addItem(new ItemStack(Material.NETHER_PORTAL));
+                    player.getInventory().addItem(new ItemStack(randomMaterialWhoContains("netherite")));
                 }
                 break;
             case LAZER:
@@ -169,6 +172,7 @@ public class JohnItemAbilities implements JohnableItem {
             case LUCK:
                 break;
             case LAZER:
+                onLeftClickAir(itemAbility, player, playerInteractEvent);
                 break;
         }
     }
@@ -200,7 +204,7 @@ public class JohnItemAbilities implements JohnableItem {
                             if (randomChance(0.10d)) {
                                 target[0].setFireTicks(20);
                             }
-                            target[0].sendMessage(bold(ChatColor.RED) + player.getName() + " used AURA on you!");
+                            target[0].sendMessage(bold(RED) + player.getName() + " used AURA on you!");
                             Bukkit.getLogger().log(Level.INFO, player.getName() + " used AURA (" + ticksElapsed + " ticks) | Target: " + target[0].toString());
                         } else if (ticksElapsed >= 80) {
                             this.cancel();
