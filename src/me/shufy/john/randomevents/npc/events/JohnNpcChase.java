@@ -24,7 +24,7 @@ public class JohnNpcChase extends RandomEvent implements JohnableRandomEvent {
     public void setup(Location location) {
       //  Bukkit.getLogger().log(Level.INFO, "Running JohnNpcChase");
         if (location.getWorld().getEnvironment() != null)
-        shouldNotExecute = (location.getWorld().getEnvironment().equals(World.Environment.NETHER);
+        shouldNotExecute = (location.getWorld().getEnvironment().equals(World.Environment.NETHER));
         if (!shouldNotExecute) {
             john = new Npc("John", JOHN_UUID.toString(), location);
             setRunForTicks(randomInt(200, 500));
