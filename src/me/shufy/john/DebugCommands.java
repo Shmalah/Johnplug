@@ -1,6 +1,5 @@
 package me.shufy.john;
 
-import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -9,10 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.ArrayList;
-
-import static me.shufy.john.util.JohnUtility.vectorFromLocToLoc;
 
 public class DebugCommands implements CommandExecutor {
 
@@ -25,10 +20,6 @@ public class DebugCommands implements CommandExecutor {
             if (s.equalsIgnoreCase("jdb")) {
                 if (args.length > 0) {
                     switch (args[0]) {
-                        case "allitems":
-                            player.sendMessage(String.format("There are %d john items currently in the server.", JohnItemListener.getJohnItems().size()));
-                            player.sendMessage(JohnItemListener.getJohnItems().toString());
-                            break;
                         case "debug":
                         case "debugmode":
                             debugMode = !debugMode;

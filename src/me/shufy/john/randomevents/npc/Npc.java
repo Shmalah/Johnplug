@@ -4,21 +4,24 @@ import com.mojang.authlib.GameProfile;
 import me.shufy.john.Main;
 import me.shufy.john.util.JohnUtility;
 import me.shufy.john.util.YawPitch;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R2.EntityPlayer;
+import net.minecraft.server.v1_16_R2.MinecraftServer;
+import net.minecraft.server.v1_16_R2.PlayerInteractManager;
+import net.minecraft.server.v1_16_R2.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.*;
@@ -35,6 +38,7 @@ public class Npc {
 
     private EntityPlayer npcPlayer;
     private BukkitTask npcLoopTask;
+    double npcSpeedMultipler = 0.3d;
 
     public boolean jumpscare = false;
 
@@ -83,7 +87,7 @@ public class Npc {
         if (!getClosestPlayer(npcPlayer.getBukkitEntity()).getGameMode().equals(GameMode.SURVIVAL)) {
             return; // don't move towards players who are in creative for now..
         }
-        Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getLocation(), getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation()).normalize().multiply(0.2);
+        Vector vR = vectorFromLocToLoc(npcPlayer.getBukkitEntity().getLocation(), getClosestPlayer(npcPlayer.getBukkitEntity()).getLocation()).normalize().multiply(npcSpeedMultipler);
         npcPlayer.setLocation(npcPlayer.locX()+vR.getX(), npcPlayer.locY()+vR.getY(), npcPlayer.locZ()+vR.getZ(), npcPlayer.yaw, npcPlayer.pitch);
         sendNmsPackets(npcPlayer.getBukkitEntity().getWorld().getPlayers(), npcPlayer, new Object[] {  }, PacketType.NPC_TELEPORT);
     }

@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.*;
-import static me.shufy.john.util.JohnUtility.randomPlayer;
 
 public class JohnNpcChase extends RandomEvent implements JohnableRandomEvent {
     public JohnNpcChase(String eventName, Collection<Player> players, Location location, double chance) {
@@ -21,7 +20,7 @@ public class JohnNpcChase extends RandomEvent implements JohnableRandomEvent {
     Npc john;
     @Override
     public void setup(Location location) {
-        Bukkit.getLogger().log(Level.INFO, "Running JohnNpcChase");
+      //  Bukkit.getLogger().log(Level.INFO, "Running JohnNpcChase");
         john = new Npc("John", JOHN_UUID.toString(), location);
         setRunForTicks(randomInt(200, 500));
         setEventWorld(getWorldWithMostPlayers());

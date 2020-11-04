@@ -7,14 +7,11 @@ import me.shufy.john.util.ParticleRay;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -22,7 +19,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
-import static me.shufy.john.items.JohnItem.randomMaterial;
 import static me.shufy.john.items.JohnItem.randomMaterialWhichContains;
 import static me.shufy.john.util.JohnUtility.*;
 import static org.bukkit.ChatColor.RED;
@@ -122,7 +118,7 @@ public class JohnItemAbilities implements JohnableItem {
                 break;
             case LUCK:
                 if (randomChance(0.04d)) {
-                    player.sendMessage(bold(ChatColor.GREEN) + "You feel a leprechaun ticks your insides."); // lol
+                    player.sendMessage(bold(ChatColor.GREEN) + "You feel a leprechaun tickle your insides."); // lol
                     player.getInventory().addItem(new ItemStack(randomMaterialWhoContains("netherite")));
                 }
                 break;

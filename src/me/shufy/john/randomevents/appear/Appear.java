@@ -1,6 +1,5 @@
 package me.shufy.john.randomevents.appear;
 
-import me.shufy.john.items.JohnItem;
 import me.shufy.john.items.JohnItemListener;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -38,7 +37,7 @@ public class Appear  {
                         }
                         if (target != null)
                             targetName = target.getName();
-                            Bukkit.getLogger().log(Level.INFO, "Target: " + target.getName());
+                         //   Bukkit.getLogger().log(Level.INFO, "Target: " + target.getName()); not needed and just creates errors too
                         Collection<Player> playersInSurvival = new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(p -> !p.getGameMode().equals(GameMode.CREATIVE)).collect(Collectors.toList());
                         if (!playersInSurvival.isEmpty()) {
                             ticksToAppearFor = randomInt(20, 70);
