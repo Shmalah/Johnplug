@@ -5,6 +5,7 @@ import me.shufy.john.randomevents.RandomEvent;
 import me.shufy.john.randomevents.npc.Npc;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -21,11 +22,13 @@ public class JohnNpcChase extends RandomEvent implements JohnableRandomEvent {
     @Override
     public void setup(Location location) {
       //  Bukkit.getLogger().log(Level.INFO, "Running JohnNpcChase");
-        john = new Npc("John", JOHN_UUID.toString(), location);
-        setRunForTicks(randomInt(200, 500));
-        setEventWorld(getWorldWithMostPlayers());
-        setPlayers(getEventWorld().getPlayers());
-        setLocation(randomPlayer(getEventWorld()).getEyeLocation());
+        if (!location.getWorld().getEnvironment().equals(World.Environment.NETHER)) {
+            john = new Npc("John", JOHN_UUID.toString(), location);
+            setRunForTicks(randomInt(200, 500));
+            setEventWorld(getWorldWithMostPlayers());
+            setPlayers(getEventWorld().getPlayers());
+            setLocation(randomPlayer(getEventWorld()).getEyeLocation());
+        }
     }
 
     @Override
