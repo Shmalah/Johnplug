@@ -2,6 +2,7 @@ package me.shufy.john;
 
 import me.shufy.john.biomes.JohnBiomeListener;
 import me.shufy.john.items.JohnItemListener;
+import me.shufy.john.items.stupid.JohnBoatListener;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;
@@ -23,6 +24,7 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JohnItemListener(), this);
         getServer().getPluginManager().registerEvents(new RandomEventListener(), this);
         getServer().getPluginManager().registerEvents(new NpcJoinListen(), this);
+        getServer().getPluginManager().registerEvents(new JohnBoatListener(), this);
         AnimalAppear animalAppear = new AnimalAppear(); // starts random animal appear event
 
         // random johnable events
