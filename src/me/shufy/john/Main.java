@@ -2,7 +2,7 @@ package me.shufy.john;
 
 import me.shufy.john.biomes.JohnBiomeListener;
 import me.shufy.john.items.JohnItemListener;
-import me.shufy.john.items.stupid.JohnBoatListener;
+import me.shufy.john.items.stupid.boat.JohnBoatListener;
 import me.shufy.john.randomevents.JohnableRandomEvent;
 import me.shufy.john.randomevents.RandomEventListener;
 import me.shufy.john.randomevents.appear.AnimalAppear;

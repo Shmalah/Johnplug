@@ -1,4 +1,4 @@
-package me.shufy.john.items.stupid;
+package me.shufy.john.items.stupid.boat;
 
 import me.shufy.john.Main;
 import org.bukkit.entity.Boat;
