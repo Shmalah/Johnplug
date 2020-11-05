@@ -18,6 +18,7 @@ public class JohnBoat {
         ItemStack boat = new ItemStack(Material.ACACIA_BOAT);
         ItemMeta meta = boat.getItemMeta();
         assert meta != null;
+        meta.setLocalizedName(bold(ChatColor.RED) + "JOHN BOAT");
         meta.setDisplayName(bold(ChatColor.RED) + "JOHN BOAT");
         meta.setLore(new ArrayList<String>(){{
             add(ChatColor.GOLD + "The john boat!");

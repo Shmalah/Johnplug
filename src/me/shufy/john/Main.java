@@ -12,6 +12,7 @@ import me.shufy.john.randomevents.npc.Npc;
 import me.shufy.john.randomevents.npc.NpcJoinListen;
 import me.shufy.john.randomevents.npc.events.JohnNpcChase;
 import me.shufy.john.randomevents.npc.events.RandomNpcAppearance;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,9 +45,13 @@ public class Main extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-        if (!Npc.allNpcs.isEmpty())
-            Npc.allNpcs.forEach(NPC -> NPC.destroy(true));
-        Npc.allNpcs.clear();
-        getLogger().log(Level.WARNING, "The John plugin has been disabled!");
+        try {
+            if (!Npc.allNpcs.isEmpty())
+                Npc.allNpcs.forEach(NPC -> NPC.destroy(true));
+            Npc.allNpcs.clear();
+            getLogger().log(Level.WARNING, "The John plugin has been disabled!");
+        } catch (NoClassDefFoundError ex) {
+            Bukkit.getLogger().log(Level.WARNING, "Npcs not created, nothing to remove");
+        }
     }
 }

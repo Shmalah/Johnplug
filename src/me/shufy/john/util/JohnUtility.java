@@ -4,15 +4,13 @@ import me.shufy.john.DebugCommands;
 import me.shufy.john.randomevents.npc.Npc;
 import me.shufy.john.randomevents.npc.PacketType;
 import net.minecraft.server.v1_16_R2.*;
-import org.apache.commons.lang.IllegalClassException;
-import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
-import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -198,6 +196,21 @@ public final class JohnUtility {
     public static YawPitch yawPitchFromVector(Vector vector) {
         float yaw = (float) Math.toDegrees(Math.atan2(vector.getZ(), vector.getX()))-90, pitch = (float) Math.toDegrees(Math.asin(vector.getY()))*-1;
         return new YawPitch(yaw, pitch);
+    }
+    public static Player closestPlayerToVehicle(Vehicle v) {
+        Player closestPlayer = null;
+        for (Player player : v.getWorld().getPlayers()) {
+            double playerDist = vectorFromLocToLoc(v.getLocation(), player.getLocation()).length();
+            if (closestPlayer == null) {
+                closestPlayer = player;
+            } else {
+                double closestDist = vectorFromLocToLoc(v.getLocation(), closestPlayer.getLocation()).length();
+                if (playerDist < closestDist) {
+                    closestPlayer = player;
+                }
+            }
+        }
+        return closestPlayer;
     }
     /**
      * <p>Creates a default length-by-height 4 x 4 nether portal.</p>
