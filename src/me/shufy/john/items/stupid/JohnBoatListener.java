@@ -3,6 +3,7 @@ package me.shufy.john.items.stupid;
 import me.shufy.john.Main;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
@@ -22,7 +23,9 @@ public class JohnBoatListener implements Listener {
                 @Override
                 public void run() {
                     if (boat.isDead()) {
-                        closestPlayerToVehicle(boat).getInventory().addItem(JohnBoat.johnBoat());
+                        Player closestPlayerToBoat = closestPlayerToVehicle(boat);
+                        if (closestPlayerToBoat != null)
+                            closestPlayerToVehicle(boat).getInventory().addItem(JohnBoat.johnBoat());
                         this.cancel();
                     }
                 }
