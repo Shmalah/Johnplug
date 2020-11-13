@@ -3,6 +3,8 @@ package me.shufy.john;
 import me.shufy.john.biomes.JohnBiomeListener;
 import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.stupid.JohnBoatListener;
+import me.shufy.john.scare.Npc;
+import me.shufy.john.scare.Spooker;
 import org.bukkit.GameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,11 +13,14 @@ import java.util.logging.Level;
 public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
+
         getServer().getPluginManager().registerEvents(new JohnBiomeListener(), this);
         getServer().getPluginManager().registerEvents(new JohnItemListener(), this);
         getServer().getPluginManager().registerEvents(new JohnBoatListener(), this);
 
-        // john challenges
+        // john
+        Npc.initializeNpcs();
+        new Spooker();
 
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");
@@ -27,6 +32,6 @@ public class Main extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-
+        Npc.deinitializeNpcs();
     }
 }

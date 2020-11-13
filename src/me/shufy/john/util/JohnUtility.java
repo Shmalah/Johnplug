@@ -1,26 +1,20 @@
 package me.shufy.john.util;
 
 import me.shufy.john.DebugCommands;
-import me.shufy.john.randomevents.npc.Npc;
-import me.shufy.john.randomevents.npc.PacketType;
-import net.minecraft.server.v1_16_R2.*;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public final class JohnUtility {
-    public static final UUID JOHN_UUID = UUID.fromString("4523497a-d9af-4b8d-ae8a-33400fdb92d6");
     public JohnUtility() {
       //  throw new IllegalClassException("A non static instance of JohnUtility was created.. JohnUtility is supposed to be a static final class.");
     }
@@ -134,6 +128,9 @@ public final class JohnUtility {
         }
         return animalTypes.stream().skip(randomInt(animalTypes.size())).findFirst().get();
     }
+    public static World getRandomWorld() {
+        return Bukkit.getWorlds().stream().filter(w -> !w.getPlayers().isEmpty()).skip(ThreadLocalRandom.current().nextInt(Bukkit.getWorlds().size())).findFirst().orElse(null);
+    }
     public static World getWorldWithMostPlayers() {
         World mostPlayers = null;
         for (World world : Bukkit.getWorlds()) {
@@ -150,6 +147,7 @@ public final class JohnUtility {
     public static String locationToString(Location location) {
         return location.getX() + " " + location.getY() + " " + location.getZ();
     }
+    /*
     public static void sendNmsPackets(Collection<Player> players, EntityPlayer npc, Object[] packetArgs, PacketType... packetTypes) {
         for (int i = 0; i < packetTypes.length; i++) {
             for (Player player : players) {
@@ -157,7 +155,9 @@ public final class JohnUtility {
             }
         }
     }
-    private static void sendPackets(PacketType packetType, EntityPlayer npc, Player player, Object[] packetArgs) {
+
+     */
+  /*  private static void sendPackets(PacketType packetType, EntityPlayer npc, Player player, Object[] packetArgs) {
         ArrayList<Packet<?>> packets = new ArrayList<>();
         switch (packetType) {
             case NPC_MOVE: // this never works
@@ -192,7 +192,7 @@ public final class JohnUtility {
         }
         if (!packets.isEmpty())
             for (Packet<?> packet : packets) ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
-    }
+    }*/
     public static YawPitch yawPitchFromVector(Vector vector) {
         float yaw = (float) Math.toDegrees(Math.atan2(vector.getZ(), vector.getX()))-90, pitch = (float) Math.toDegrees(Math.asin(vector.getY()))*-1;
         return new YawPitch(yaw, pitch);
