@@ -28,6 +28,11 @@ public class Spooker {
         }.runTaskTimer(plugin, 0, (20L * 10));
     }
     private void spookPlayer(Player player, int johnExistenceTicks) {
+
+        // john should only appear at night
+        if (player.getWorld().getTime() < 14000)
+            return;
+
         Npc npc = new Npc();
         Sound randomMusicSound = JohnUtility.randomSoundWhoContains("music");
 
