@@ -22,7 +22,7 @@ public class Spooker {
             @Override
             public void run() {
                 if (ThreadLocalRandom.current().nextDouble() < 0.2d || DebugCommands.isDebugMode()) {
-                    spookPlayer(JohnUtility.randomPlayer(JohnUtility.getWorldWithMostPlayers()), ThreadLocalRandom.current().nextInt(100, 300));
+                    spookPlayer(JohnUtility.randomPlayer(JohnUtility.getWorldWithMostPlayers()), ThreadLocalRandom.current().nextInt(20, 120));
                 }
             }
         }.runTaskTimer(plugin, 0, (20L * 10));
@@ -45,6 +45,9 @@ public class Spooker {
 
         // chance that john will force the victim to look at him, freezing the player in time.
         boolean forceLook = (ThreadLocalRandom.current().nextDouble() < 0.2d);
+
+        // set player to look at john at least on the first tick so that he can appear "in front" of them
+        player.teleport(player.getLocation().setDirection(npc.getNpcPlayer().getBukkitEntity().getLocation().toVector().subtract(player.getLocation().toVector()).normalize()));
 
         // responsible for controlling john's gaze
         BukkitTask lookTask = new BukkitRunnable() {
