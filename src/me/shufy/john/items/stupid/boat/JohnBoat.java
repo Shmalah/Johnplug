@@ -1,4 +1,4 @@
-package me.shufy.john.items.stupid;
+package me.shufy.john.items.stupid.boat;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

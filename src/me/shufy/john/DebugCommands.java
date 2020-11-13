@@ -1,6 +1,6 @@
 package me.shufy.john;
 
-import me.shufy.john.items.stupid.JohnBoat;
+import me.shufy.john.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
