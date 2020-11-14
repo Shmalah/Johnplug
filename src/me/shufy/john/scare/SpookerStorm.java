@@ -3,6 +3,7 @@ package me.shufy.john.scare;
 import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
 import me.shufy.john.util.JohnUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -24,12 +25,16 @@ public class SpookerStorm {
             @Override
             public void run() {
                 if (ThreadLocalRandom.current().nextDouble() < 0.1d || DebugCommands.isDebugMode()) {
-                    doSpookyStorm(JohnUtility.randomPlayer(JohnUtility.getWorldWithMostPlayers()), ThreadLocalRandom.current().nextInt(20, 120));
+                    doSpookyStorm(JohnUtility.randomPlayer(JohnUtility.getWorldWithMostPlayers()), ThreadLocalRandom.current().nextInt(600, 2400));
                 }
             }
         }.runTaskTimer(plugin, 0, (20L * 10));
     }
     private void doSpookyStorm(Player player, int duration) {
+
+        if (Bukkit.getOnlinePlayers().isEmpty())
+            return;
+
         // stormOngoing = spooky storm is already in progress.. there cant be 2 at one time
         if (!player.getWorld().hasStorm() || stormOngoing)
             return;

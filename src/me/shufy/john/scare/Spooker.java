@@ -4,6 +4,7 @@ import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
 import me.shufy.john.util.JohnUtility;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -52,11 +53,14 @@ public class Spooker {
         // set player to look at john at least on the first tick so that he can appear "in front" of them
         player.teleport(player.getLocation().setDirection(npc.getNpcPlayer().getBukkitEntity().getLocation().toVector().subtract(player.getLocation().toVector()).normalize()));
 
+        Location playerLoc = player.getLocation().clone();
+
         // responsible for controlling john's gaze
         BukkitTask lookTask = new BukkitRunnable() {
             @Override
             public void run() {
                 npc.lookAt(player);
+                player.teleport(new Location(player.getWorld(), playerLoc.getX(), playerLoc.getY(), playerLoc.getZ(), player.getLocation().getYaw(), player.getLocation().getPitch()));
                 if (forceLook)
                     player.teleport(player.getLocation().setDirection(npc.getNpcPlayer().getBukkitEntity().getLocation().toVector().subtract(player.getLocation().toVector()).normalize()));
             }
