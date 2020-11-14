@@ -35,6 +35,7 @@ public class SpookerStorm {
             return;
 
         stormOngoing = true;
+        player.getWorld().setStorm(true);
 
         // make sure it rains during the entire duration of the john storm..
         player.getWorld().setThunderDuration(duration);

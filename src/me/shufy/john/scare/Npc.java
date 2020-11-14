@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Npc {
 
@@ -63,7 +64,7 @@ public class Npc {
     }
 
     public void appearTo(Player player) {
-        double distance = (player.isSprinting() ? 3.5 : 1.5);
+        double distance = ThreadLocalRandom.current().nextInt(2, 5);
         Location appearLocation = player.getLocation();
         switch (player.getFacing()) {
             case NORTH:
@@ -79,6 +80,10 @@ public class Npc {
                 appearLocation.setX(appearLocation.getX() + distance);
                 break;
         }
+        // chance that john will appear one block above so that you can see his actual face (his body)
+        if (ThreadLocalRandom.current().nextDouble() < 0.2d)
+            appearLocation.setY(appearLocation.getY() + 1)
+                    ;
         spawn(appearLocation, player);
     }
 

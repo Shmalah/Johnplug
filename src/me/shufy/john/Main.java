@@ -5,6 +5,7 @@ import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.stupid.JohnBoatListener;
 import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
+import me.shufy.john.scare.SpookerStorm;
 import org.bukkit.GameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,6 +22,7 @@ public class Main extends JavaPlugin {
         // john
         Npc.initializeNpcs();
         new Spooker();
+        new SpookerStorm();
 
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");
