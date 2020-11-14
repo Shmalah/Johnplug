@@ -1,7 +1,7 @@
 package me.shufy.john;
 
-import me.shufy.john.biomes.JohnBiomeListener;
 import me.shufy.john.items.JohnItemListener;
+import me.shufy.john.items.stupid.boat.JohnBoatListener;
 import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
 import me.shufy.john.scare.SpookerStorm;
@@ -14,8 +14,9 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        getServer().getPluginManager().registerEvents(new JohnBiomeListener(), this);
+        //getServer().getPluginManager().registerEvents(new JohnBiomeListener(), this);
         getServer().getPluginManager().registerEvents(new JohnItemListener(), this);
+        getServer().getPluginManager().registerEvents(new JohnBoatListener(), this);
 
         // john
         Npc.initializeNpcs();
