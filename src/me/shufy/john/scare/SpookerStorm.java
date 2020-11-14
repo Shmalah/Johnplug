@@ -7,10 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -75,8 +76,8 @@ public class SpookerStorm {
                     player.getWorld().strikeLightningEffect(lightningLoc);
                     if (ThreadLocalRandom.current().nextDouble() < 0.1d) {
                         Hoglin hoglin = (Hoglin) player.getWorld().spawnEntity(lightningLoc, EntityType.HOGLIN);
-                        hoglin.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
-                        hoglin.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(10);
+                        hoglin.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
+                        hoglin.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 2));
                         hoglin.setTarget(randomPlayer(player.getWorld()));
                     }
                 }

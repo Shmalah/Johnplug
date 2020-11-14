@@ -41,6 +41,10 @@ public class Spooker {
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, johnExistenceTicks+2, 6));
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, johnExistenceTicks+15, 3));
+        if (ThreadLocalRandom.current().nextDouble() < 0.2d)
+            player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, johnExistenceTicks+10, 3));
+        if (ThreadLocalRandom.current().nextDouble() > 0.8d)
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, johnExistenceTicks+10, 2));
         player.playSound(npc.getNpcPlayer().getBukkitEntity().getEyeLocation(), randomMusicSound, 1f, 0.1f);
 
         npc.getNpcPlayer().setCustomNameVisible(false);
