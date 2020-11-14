@@ -7,6 +7,7 @@ import me.shufy.john.util.ParticleRay;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -55,10 +56,10 @@ public class JohnItemAbilities implements JohnableItem {
                     int ticks = 0;
                     @Override
                     public void run() {
-                        if (ticks >= 50) this.cancel();
+                        if (ticks >= 30) this.cancel();
                         if (!player.getWorld().equals(w)) this.cancel(); // they moved worlds since using the ability
                         Vector vDir = player.getLocation().getDirection();
-                        if (ticks % 10 == 0) player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 0.7f, ThreadLocalRandom.current().nextFloat());
+                        if (ticks % 10 == 0) player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 0.5f, ThreadLocalRandom.current().nextFloat());
                         RayTraceResult traceResult = w.rayTraceBlocks(player.getEyeLocation(), vDir, 20d);
                         if (traceResult != null) {
                             ParticleRay particleRay = new ParticleRay(player.getEyeLocation(), player.getLocation().getDirection(), 20, Color.RED, 1);
@@ -68,7 +69,8 @@ public class JohnItemAbilities implements JohnableItem {
                             }
                             if (traceResult.getHitBlockFace() != null)
                                 traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().breakNaturally();
-                                traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().setType(Material.FIRE); // sets the block on fire
+                                if (ThreadLocalRandom.current().nextDouble() > 0.90d)
+                                    traceResult.getHitBlockFace().getDirection().toLocation(w).getBlock().setType(Material.FIRE); // sets the block on fire
                             if (traceResult.getHitBlock() != null) {
                                 for (BlockFace blockFace : BlockFace.values()) {
                                     traceResult.getHitBlock().getRelative(blockFace).setType(Material.FIRE);
@@ -95,29 +97,23 @@ public class JohnItemAbilities implements JohnableItem {
                 break;
             case TRAMPOLINE:
                 player.playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1f, ThreadLocalRandom.current().nextFloat());
-                player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 1f, ThreadLocalRandom.current().nextFloat());
+                player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 0.6f, ThreadLocalRandom.current().nextFloat());
                 getClosestEntity(player.getLocation(), player).setVelocity(player.getLocation().getDirection().add(new Vector(0, 2, 0)).multiply(2));
                 break;
             case AURA:
-                Location loc = player.getLocation();
-                boolean oreFound = false;
-                for (int y = 0; y < 50; y++) {
-                    if (oreFound) break;
-                    for (int x = -3; x < 3; x++) {
-                        if (oreFound) break;
-                        for (int z = -3; z < 3; z++) {
-                            if (loc.getBlock().getRelative(x, -y, z).getType().name().contains("ORE")) {
-                                player.getInventory().addItem(new ItemStack(loc.getBlock().getRelative(x, -y, z).getType()));
-                                loc.getBlock().getRelative(x, -y, z).setType(Material.AIR);
-                                oreFound = true;
-                                break;
-                            }
-                        }
+                Arrow arrow = player.getWorld().spawnArrow(player.getLocation(), vectorFromLocToLoc(player.getEyeLocation(), getClosestEntity(player.getEyeLocation()).getLocation()), 1.0f, 0.1f);
+                new BukkitRunnable() {
+                    private int ticks = 0;
+                    @Override
+                    public void run() {
+                        if (ticks >= 100 || arrow.isDead() || arrow.isOnGround()) this.cancel();
+                        arrow.setVelocity(vectorFromLocToLoc(arrow.getLocation(), getClosestEntity(player.getLocation(), player).getLocation()));
+                        ticks++;
                     }
-                }
+                }.runTaskTimer(plugin, 0, 1L);
                 break;
             case LUCK:
-                if (randomChance(0.04d)) {
+                if (randomChance(0.03d)) {
                     player.sendMessage(bold(ChatColor.GREEN) + "You feel a leprechaun tickle your insides."); // lol
                     player.getInventory().addItem(new ItemStack(randomMaterialWhoContains("netherite")));
                 }
@@ -196,12 +192,12 @@ public class JohnItemAbilities implements JohnableItem {
                         if ((ticksElapsed % 6 == 0 && ticksElapsed != 0) && ticksElapsed < 80) { // (80 ticks) aka 4 seconds
                             target[0] = getClosestEntity(player.getLocation(), player);
                             target[0].setNoDamageTicks(0);
-                            target[0].damage(1.0, player);
+                            target[0].damage(2.5, player);
                             if (randomChance(0.10d)) {
                                 target[0].setFireTicks(20);
                             }
                             target[0].sendMessage(bold(RED) + player.getName() + " used AURA on you!");
-                            Bukkit.getLogger().log(Level.INFO, player.getName() + " used AURA (" + ticksElapsed + " ticks) | Target: " + target[0].toString());
+                           // Bukkit.getLogger().log(Level.INFO, player.getName() + " used AURA (" + ticksElapsed + " ticks) | Target: " + target[0].toString());
                         } else if (ticksElapsed >= 80) {
                             this.cancel();
                         }
@@ -213,8 +209,14 @@ public class JohnItemAbilities implements JohnableItem {
                // Bukkit.getLogger().log(auraTask.isCancelled() ? Level.WARNING : Level.INFO, "Aura ability worker is cancelled: " + auraTask.isCancelled());
                 break;
             case LUCK:
+                player.sendMessage(bold(ChatColor.GREEN) + "You just wasted your luck ability! Congrats.");
                 break;
             case LAZER:
+                LivingEntity lazerSnipeTarget = getClosestEntity(player.getLocation(), player);
+                ParticleRay ray = new ParticleRay(player.getEyeLocation(), vectorFromLocToLoc(player.getEyeLocation(), lazerSnipeTarget.getEyeLocation()), 30.0, Color.RED, 3);
+                ray.draw();
+                lazerSnipeTarget.setNoDamageTicks(0);
+                lazerSnipeTarget.setFireTicks(80);
                 break;
         }
     }

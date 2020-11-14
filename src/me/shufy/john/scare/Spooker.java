@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,7 +23,7 @@ public class Spooker {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (ThreadLocalRandom.current().nextDouble() < 0.2d || DebugCommands.isDebugMode()) {
+                if (ThreadLocalRandom.current().nextDouble() < 0.05d || DebugCommands.isDebugMode()) {
                     spookPlayer(JohnUtility.randomPlayer(JohnUtility.getWorldWithMostPlayers()), ThreadLocalRandom.current().nextInt(20, 120));
                 }
             }
@@ -30,7 +31,7 @@ public class Spooker {
     }
     private void spookPlayer(Player player, int johnExistenceTicks) {
 
-        // john should only appear at night
+        // john should only appear at night and when there's players online
         if (Bukkit.getOnlinePlayers().isEmpty())
             return;
         if (player.getWorld().getTime() < 14000)
@@ -50,22 +51,13 @@ public class Spooker {
         npc.getNpcPlayer().setCustomNameVisible(false);
         npc.appearTo(player);
 
-        // chance that john will force the victim to look at him, freezing the player in time.
-        boolean forceLook = (ThreadLocalRandom.current().nextDouble() < 0.2d);
-
-        // set player to look at john at least on the first tick so that he can appear "in front" of them
-        player.teleport(player.getLocation().setDirection(npc.getNpcPlayer().getBukkitEntity().getLocation().toVector().subtract(player.getLocation().toVector()).normalize()));
-
-       // Location playerLoc = player.getLocation().clone();
-
         // responsible for controlling john's gaze
         BukkitTask lookTask = new BukkitRunnable() {
             @Override
             public void run() {
                 npc.lookAt(player);
                // player.teleport(new Location(player.getWorld(), playerLoc.getX(), playerLoc.getY(), playerLoc.getZ(), player.getLocation().getYaw(), player.getLocation().getPitch()));
-                if (forceLook)
-                    player.teleport(player.getLocation().setDirection(npc.getNpcPlayer().getBukkitEntity().getLocation().toVector().subtract(player.getLocation().toVector()).normalize()));
+                player.teleport(player.getLocation().setDirection(npc.getNpcPlayer().getBukkitEntity().getLocation().toVector().subtract(player.getLocation().toVector()).normalize()));
             }
         }.runTaskTimer(Main.getPlugin(Main.class), 0, 1L);
 
@@ -75,6 +67,7 @@ public class Spooker {
             public void run() {
                 npc.remove(player);
                 player.stopSound(randomMusicSound);
+                player.setVelocity(player.getLocation().getDirection().multiply(-5).add(new Vector(0, 2, 0)));
                 lookTask.cancel();
             }
         }.runTaskLater(Main.getPlugin(Main.class), johnExistenceTicks);
