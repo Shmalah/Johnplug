@@ -144,6 +144,9 @@ public final class JohnUtility {
         }
         return mostPlayers;
     }
+    public static Location randomLocationNearPlayer(Player player, int withinRadius) {
+        return player.getLocation().add(randomInt(withinRadius), randomInt(withinRadius), randomInt(withinRadius));
+    }
     public static String locationToString(Location location) {
         return location.getX() + " " + location.getY() + " " + location.getZ();
     }
