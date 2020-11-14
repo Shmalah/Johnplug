@@ -31,7 +31,7 @@ public class SpookerStorm {
     }
     private void doSpookyStorm(Player player, int duration) {
         // stormOngoing = spooky storm is already in progress.. there cant be 2 at one time
-        if (!player.getWorld().hasStorm() && stormOngoing)
+        if (!player.getWorld().hasStorm() || stormOngoing)
             return;
 
         stormOngoing = true;
