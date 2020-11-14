@@ -4,8 +4,12 @@ import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
 import me.shufy.john.util.JohnUtility;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -13,6 +17,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
+import static me.shufy.john.util.JohnUtility.randomPlayer;
 
 public class SpookerStorm {
     public static final Main plugin = Main.getPlugin(Main.class);
@@ -55,7 +60,9 @@ public class SpookerStorm {
         BukkitTask fastDayCycleTask = new BukkitRunnable() {
             @Override
             public void run() {
-                player.getWorld().setTime(player.getWorld().getTime() + 10L); // time moves 10x faster
+                if (!player.getWorld().getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE))
+                    player.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+                player.getWorld().setTime(player.getWorld().getTime() + 1000L); // time moves 1000x faster
             }
         }.runTaskTimer(plugin, 0, 6L);
 
@@ -66,6 +73,12 @@ public class SpookerStorm {
                 if (ThreadLocalRandom.current().nextDouble() < 0.4d) {
                     Location lightningLoc = randomLocationNearPlayer(player, 50);
                     player.getWorld().strikeLightningEffect(lightningLoc);
+                    if (ThreadLocalRandom.current().nextDouble() < 0.1d) {
+                        Hoglin hoglin = (Hoglin) player.getWorld().spawnEntity(lightningLoc, EntityType.HOGLIN);
+                        hoglin.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
+                        hoglin.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(10);
+                        hoglin.setTarget(randomPlayer(player.getWorld()));
+                    }
                 }
             }
         }.runTaskTimer(plugin, 0, 10L);
