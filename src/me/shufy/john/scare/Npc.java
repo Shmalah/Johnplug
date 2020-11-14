@@ -30,7 +30,7 @@ public class Npc {
 
     public static GameProfile johnProfile() {
         // Skin #169665813 generated on Nov 11, 2020 3:25:33 PM via MineSkin.org - https://minesk.in/169665813
-        GameProfile skin169665813 = new GameProfile(UUID.fromString("a6bc2231-fe68-4b75-b796-b074b763410b"), "skin169665813");
+        GameProfile skin169665813 = new GameProfile(UUID.fromString("a6bc2231-fe68-4b75-b796-b074b763410b"), "John");
         skin169665813.getProperties().put("textures", new Property("textures", "ewogICJ0aW1lc3RhbXAiIDogMTYwNTEzMzUzMzE4OSwKICAicHJvZmlsZUlkIiA6ICI4MmM2MDZjNWM2NTI0Yjc5OGI5MWExMmQzYTYxNjk3NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3ROb3RvcmlvdXNOZW1vIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzU3ZjMyYjEwOGMxNjZhNWNkNmI4YWQzOTA3ZTg3MWMyYjYyMTRmY2VhMDk2YzZkMTY5YjUyNDhhNDg3Y2NiYjQiCiAgICB9CiAgfQp9", "ALNkre7PT/ufdze5/fFA9cBDwTX/xtO7l38rn/VxjjW2qd0pQiBw09fYYmmlhUWRf3ohr7JbrfLho4fu09WpZGn4+mgHVg2VqOalqFySiG8MX4WcI6whYfjcn6ijLAmfTcaDY9pph+JQHwzi8V1ByvcqLQldzBt/SD9oxvc1PqN3KCPstzfIYEJGeLis7M6gc+qaI7xCu/gKOiNcyGLvKUu5InDgPgtw/7DBPs6a1gaY6yutG7yJDsQqBaFyERbsOdwNytsiRehvJ/JaWRznO0XDrXYA+GiNKaRP6ehpiHuRIFENEIIMBRncjjL+Xj3/TS3oANjPBHCmeq0q8Z05v0N5vPvO8vyJWYdw5YLPfubePGsf2n/KiGYroe3n7aohViwzBIzGUVNTxcHchMUI7X/RtMSm3y8iuo5ByLcRvxKU6Jn/vnI3qCYGLqIf/+TnzwseUl5FvMMZfezVOCEU5tzZwBriDIn7x5dcBTu1Z2qVXe4hIatpkUCPlq+kREkaJu7VCs7AiP4hWFvdFfyj+TkFvunzNkUd5Tf3SRQYxlJaD2niHfAzlH/sR6u3N5WZLeGGe6R+LmglSHmT8vIhw/YbvwlQyht/rDmiyA7jT+BekEB8bjFRLx4gd+2N6qLJBZhB8UbeAhyJppG0nVafbKGjw14YU8nW4EbnQOfaojw="));
         return skin169665813;
     }

@@ -3,6 +3,7 @@ package me.shufy.john.scare;
 import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
 import me.shufy.john.util.JohnUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -30,6 +31,8 @@ public class Spooker {
     private void spookPlayer(Player player, int johnExistenceTicks) {
 
         // john should only appear at night
+        if (Bukkit.getOnlinePlayers().isEmpty())
+            return;
         if (player.getWorld().getTime() < 14000)
             return;
 
