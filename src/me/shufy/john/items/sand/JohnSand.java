@@ -12,7 +12,7 @@ import static me.shufy.john.util.JohnUtility.bold;
 public class JohnSand {
     ItemStack sand;
     public JohnSand() {
-
+        this.sand = johnSand();
     }
     private ItemStack johnSand() {
         sand = new ItemStack(Material.SAND);
@@ -23,5 +23,8 @@ public class JohnSand {
         }});
         sand.setItemMeta(sandMeta);
         return sand;
+    }
+    public ItemStack getItemStack() {
+        return this.sand;
     }
 }
