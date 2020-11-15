@@ -4,26 +4,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import static me.shufy.john.util.JohnUtility.playerIsTargeting;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 public class JohnListener implements Listener {
     @EventHandler
     public void onPlayerAttackJohn (PlayerInteractEvent e) {
         if (e.getAction() == Action.LEFT_CLICK_AIR) {
-            JohnNpc targetedNpc = null;
             for (JohnNpc johnNpc : JohnNpc.allNpcs) {
-                if (playerIsTargeting(e.getPlayer(), johnNpc.getNpc().getBukkitEntity().getLocation().add(0, 1, 0))) {
-                    targetedNpc = johnNpc;
-                    break;
+                Vector vLook = johnNpc.npc.getBukkitEntity().getBoundingBox().getCenter().subtract(e.getPlayer().getEyeLocation().toVector());
+                RayTraceResult rt = e.getPlayer().getWorld().rayTraceEntities(e.getPlayer().getEyeLocation(), vLook, 5.0);
+                if (rt != null) {
+                    if (johnNpc.npc.getBukkitEntity().getBoundingBox().getCenter().subtract(rt.getHitPosition()).length() < 1.1) {
+                        johnNpc.takeKnockback(e.getPlayer(), 2.1);
+                    }
                 }
-            }
-            // player did not attack any npc
-            if (targetedNpc == null)
-                return;
-            // player probably did attack an npc
-            if (targetedNpc.isSpawnedIn()) {
-                targetedNpc.takeKnockback(e.getPlayer(), 2.1);
             }
         }
     }

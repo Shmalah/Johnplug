@@ -172,6 +172,9 @@ public final class JohnUtility {
 
         double length = cp.length();
 
+        // temporary debug
+        Bukkit.getLogger().log(Level.INFO, String.valueOf(cp.length()));
+
         return (length < 0.1);
     }
     public static Location randomLocationNearPlayer(Player player, int withinRadius) {
