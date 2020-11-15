@@ -3,6 +3,7 @@ package me.shufy.john;
 import me.shufy.john.corenpc.JohnListener;
 import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.items.JohnItemListener;
+import me.shufy.john.items.johnrod.JohnRodListener;
 import me.shufy.john.items.sand.JohnSandListener;
 import me.shufy.john.items.stupid.boat.JohnBoatListener;
 import me.shufy.john.scare.Npc;
@@ -24,6 +25,7 @@ public class Main extends JavaPlugin {
 
         // john items/blocks
         getServer().getPluginManager().registerEvents(new JohnSandListener(), this);
+        getServer().getPluginManager().registerEvents(new JohnRodListener(), this);
 
         // john
         Npc.initializeNpcs();

@@ -10,7 +10,13 @@ import org.bukkit.util.Vector;
 public class JohnListener implements Listener {
     @EventHandler
     public void onPlayerAttackJohn (PlayerInteractEvent e) {
-        if (e.getAction() == Action.LEFT_CLICK_AIR) {
+        if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (!e.getPlayer().getInventory().getItemInMainHand().hasItemMeta())
+                return;
+            if (!e.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasLore())
+                return;
+            if (!e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLore().get(0).contains("The John Deflector Rod"))
+                return;
             for (JohnNpc johnNpc : JohnNpc.allNpcs) {
                 Vector vLook = johnNpc.npc.getBukkitEntity().getBoundingBox().getCenter().subtract(e.getPlayer().getEyeLocation().toVector());
                 RayTraceResult rt = e.getPlayer().getWorld().rayTraceEntities(e.getPlayer().getEyeLocation(), vLook, 5.0);
