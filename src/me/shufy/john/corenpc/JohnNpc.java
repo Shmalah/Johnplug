@@ -2,6 +2,7 @@ package me.shufy.john.corenpc;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import me.shufy.john.Main;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,6 +10,7 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -96,6 +98,35 @@ public class JohnNpc {
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, String.format("Tried to send a move packet to player \"%s\" for John NPC \"%s\" but an exception was thrown: %s", curplayer.getName(), this.hashCode(), ex.getMessage()));
         }
+    }
+
+    public void takeKnockback(Location source, double amount) {
+        Vector vKb = npc.getBukkitEntity().getLocation().toVector().subtract(source.toVector()).multiply(amount);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // knocks back the npc until the vector is effectively 0
+                if (vKb.length() < 0.05)
+                    this.cancel();
+                move(vKb.getX(), vKb.getY(), vKb.getZ());
+                vKb.multiply(0.5); // halve the vector
+            }
+        }.runTaskTimer(me.shufy.john.Main.getPlugin(Main.class), 0, 1L);
+    }
+
+    // overload for player source
+    public void takeKnockback(Player player, double amount) {
+        Vector vKb = player.getLocation().getDirection().multiply(amount);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // knocks back the npc until the vector is effectively 0
+                if (vKb.length() < 0.05)
+                    this.cancel();
+                move(vKb.getX(), vKb.getY(), vKb.getZ());
+                vKb.multiply(0.5); // halve the vector
+            }
+        }.runTaskTimer(me.shufy.john.Main.getPlugin(Main.class), 0, 1L);
     }
 
     public void destroy() {

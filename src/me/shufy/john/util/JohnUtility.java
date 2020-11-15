@@ -158,6 +158,22 @@ public final class JohnUtility {
         }
         return mostPlayers;
     }
+    public static boolean playerIsTargeting(Player player, Location target) {
+        if(!target.getWorld().equals(player.getWorld()))
+            return false;
+
+        Location head = player.getLocation().add(0, player.getEyeHeight(), 0);
+
+        Vector look = player.getLocation().getDirection().normalize();
+
+        Vector direction = head.subtract(target).toVector().normalize();
+
+        Vector cp = direction.crossProduct(look);
+
+        double length = cp.length();
+
+        return (length < 0.1);
+    }
     public static Location randomLocationNearPlayer(Player player, int withinRadius) {
         return player.getLocation().add(randomInt(withinRadius), randomInt(withinRadius), randomInt(withinRadius));
     }

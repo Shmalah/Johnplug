@@ -39,6 +39,8 @@ public class DebugCommands implements CommandExecutor {
                                 public void run() {
                                     Vector vDelta = player.getLocation().toVector().subtract(john.getNpc().getBukkitEntity().getLocation().toVector()).normalize().multiply(0.3d);
                                     john.look(player.getEyeLocation()); // look into the eyes of your victim.
+                                    if (john.getNpc().getBukkitEntity().getLocation().getBlock().isLiquid())
+                                        vDelta.multiply(0.5);
                                     john.move(vDelta.getX(), vDelta.getY(), vDelta.getZ()); // move toward your victim, john. It's time.
                                 }
                             }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);

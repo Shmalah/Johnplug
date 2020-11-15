@@ -1,5 +1,6 @@
 package me.shufy.john;
 
+import me.shufy.john.corenpc.JohnListener;
 import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.stupid.boat.JohnBoatListener;
@@ -18,6 +19,7 @@ public class Main extends JavaPlugin {
         //getServer().getPluginManager().registerEvents(new JohnBiomeListener(), this);
         getServer().getPluginManager().registerEvents(new JohnItemListener(), this);
         getServer().getPluginManager().registerEvents(new JohnBoatListener(), this);
+        getServer().getPluginManager().registerEvents(new JohnListener(), this);
 
         // john
         Npc.initializeNpcs();
