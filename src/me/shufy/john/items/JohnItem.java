@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -42,13 +41,16 @@ public class JohnItem {
     public static String randomJohnItemName() {
         StringBuilder strb = new StringBuilder();
         String[] c1 = {
-            "Hayasaka's", "Jaden's", "John's", "JJ's", "Batman's", "The Stupid", "Isabelle's", "The Remarkable", "The Superior", "The Testicular", "The Fucked-Up", "The John", "The Semen", "The Cum", "The Ass", "The Super", "The Ultra", "The Indeterminate"
+            "Hayasaka's", "Jaden's", "John's", "JJ's", "Batman's", "The Stupid", "Isabelle's", "The Remarkable", "The Superior", "The Testicular", "The Fucked-Up", "The John", "The Semen", "The Cum", "The Ass", "The Super", "The Ultra", "The Indeterminate",
+                "Austin's", "The Austin", "The Jaden", "The Garfield", "The Persona 5", "The Sonic", "The Mario", "The Princess Peach", "The Toadstool", "The Grant"
         };
         String[] c2 = {
-            "Cum Stain", "Ass Wipe", "Bowling Ball", "Golf Ball", "Golden Obelisk", "Obelisk", "Sound-Proof", "Window", "Water Bottle", "Hydro Vesticular", "Intestination", "Sakuya", "Izayoi", "Flower", "Pumped"
+            "Cum Stain", "Ass Wipe", "Bowling Ball", "Golf Ball", "Golden Obelisk", "Obelisk", "Sound-Proof", "Window", "Water Bottle", "Hydro Vesticular", "Intestination", "Sakuya", "Izayoi", "Flower", "Pumped", "Super-Magic", "Super-Duper",
+                "Holocaust", "Hambergr", "Sticky", "Ranch-ey", "Fart-ey", "Poopy", "Jaden-ey", "Shufy-ey", "Rainbowzz", "ExplodingTNT", "Samuel", "Church's", "Mongrelium"
         };
         String[] c3 = {
-            "Blower", "Pouncer", "Pounder", "Fucker", "Machine", "Machinery", "Objectoid", "Sakuya-oid", "Plower", "Gasser", "Girl Machine", "Slavery", "Sexer"
+            "Blower", "Pouncer", "Pounder", "Fucker", "Machine", "Machinery", "Objectoid", "Sakuya-oid", "Plower", "Gasser", "Girl Machine", "Slavery", "Sexer", "Server", "Observer", "Parser", "Plumber", "Pleasurer", "Humper", "Big Boy Machine",
+                "Creamer", "Sucker", "Ribbler"
         };
         strb.append(c1[randomInt(c1.length)]).append(" ").append(c2[randomInt(c2.length)]).append(" ").append(c3[randomInt(c3.length)]);
         return strb.toString();
