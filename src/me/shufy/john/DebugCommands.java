@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class DebugCommands implements CommandExecutor {
 
@@ -33,6 +34,14 @@ public class DebugCommands implements CommandExecutor {
                         case "johnjohn":
                             JohnNpc john = new JohnNpc(player.getLocation());
                             john.spawn(player.getLocation().getWorld().getPlayers());
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    Vector vDelta = player.getLocation().toVector().subtract(john.getNpc().getBukkitEntity().getLocation().toVector()).normalize().multiply(0.3d);
+                                    john.look(player.getEyeLocation()); // look into the eyes of your victim.
+                                    john.move(vDelta.getX(), vDelta.getY(), vDelta.getZ()); // move toward your victim, john. It's time.
+                                }
+                            }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

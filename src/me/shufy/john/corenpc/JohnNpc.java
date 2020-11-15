@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +67,37 @@ public class JohnNpc {
         }
     }
 
+    public void look(Location point) {
+        Vector vLook = point.toVector().subtract(npc.getBukkitEntity().getEyeLocation().toVector()).normalize();
+        npc.yaw = (float) Math.toDegrees(Math.atan2(vLook.getZ(), vLook.getX()))-90; // -90 angle correction
+        npc.pitch = (float) Math.toDegrees(Math.asin(vLook.getY()))*-1; // negate angle to correct pitch
+        Player curplayer = null;
+        try {
+            for (Player player : spawnLocation.getWorld().getPlayers()) {
+                curplayer = player;
+                PlayerConnection conn = ((CraftPlayer)player).getHandle().playerConnection;
+                conn.sendPacket(new PacketPlayOutEntityHeadRotation(npc, (byte)(npc.yaw * 256 / 360))); // yaw packet
+                conn.sendPacket(new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte)(npc.yaw * 256 / 360), (byte)(npc.pitch * 256 / 360), true)); // pitch packet
+            }
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, String.format("Tried to send a look packet to player \"%s\" for John NPC \"%s\" but an exception was thrown: %s", curplayer.getName(), this.hashCode(), ex.getMessage()));
+        }
+    }
+
+    public void move(double x, double y, double z) {
+        npc.setLocation(npc.locX()+x, npc.locY()+y, npc.locZ()+z, npc.yaw, npc.pitch);
+        Player curplayer = null;
+        try {
+            for (Player player : spawnLocation.getWorld().getPlayers()) {
+                curplayer = player;
+                PlayerConnection conn = ((CraftPlayer)player).getHandle().playerConnection;
+                conn.sendPacket(new PacketPlayOutEntityTeleport(npc));
+            }
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, String.format("Tried to send a move packet to player \"%s\" for John NPC \"%s\" but an exception was thrown: %s", curplayer.getName(), this.hashCode(), ex.getMessage()));
+        }
+    }
+
     public void destroy() {
         if (!isSpawnedIn()) {
             Bukkit.getLogger().log(Level.WARNING, String.format("Tried to destroy the John NPC \"%s\" when the John NPC \"%s\" is already destroyed.", this.hashCode(), this.hashCode()));
@@ -92,6 +124,8 @@ public class JohnNpc {
         JohnNpc curNpc = null;
         try {
             for (JohnNpc johnNpc : allNpcs) {
+                if (johnNpc == null || johnNpc.getNpc() == null)
+                    continue;
                 curNpc = johnNpc;
                 johnNpc.destroy();
                 Bukkit.getLogger().log(Level.INFO, String.format("De-initialized the NPC \"%s\"", curNpc.hashCode()));
