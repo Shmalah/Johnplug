@@ -1,5 +1,6 @@
 package me.shufy.john;
 
+import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
@@ -28,6 +29,10 @@ public class DebugCommands implements CommandExecutor {
                             break;
                         case "johnboat":
                             player.getInventory().addItem(JohnBoat.johnBoat());
+                            break;
+                        case "johnjohn":
+                            JohnNpc john = new JohnNpc(player.getLocation());
+                            john.spawn(player.getLocation().getWorld().getPlayers());
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

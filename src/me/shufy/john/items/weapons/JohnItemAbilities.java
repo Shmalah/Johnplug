@@ -215,8 +215,10 @@ public class JohnItemAbilities implements JohnableItem {
                 LivingEntity lazerSnipeTarget = getClosestEntity(player.getLocation(), player);
                 ParticleRay ray = new ParticleRay(player.getEyeLocation(), vectorFromLocToLoc(player.getEyeLocation(), lazerSnipeTarget.getEyeLocation()), 30.0, Color.RED, 3);
                 ray.draw();
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1f, 0.9f);
                 lazerSnipeTarget.setNoDamageTicks(0);
                 lazerSnipeTarget.setFireTicks(80);
+                player.getWorld().playSound(lazerSnipeTarget.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1f, 1f);
                 break;
         }
     }

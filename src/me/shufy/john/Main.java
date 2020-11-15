@@ -1,5 +1,6 @@
 package me.shufy.john;
 
+import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.stupid.boat.JohnBoatListener;
 import me.shufy.john.scare.Npc;
@@ -34,5 +35,6 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         Npc.deinitializeNpcs();
+        JohnNpc.deinitializeJohns();
     }
 }
