@@ -1,5 +1,6 @@
 package me.shufy.john.items.johnrod;
 
+import me.shufy.john.general.item.GeneralJohnItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,12 +11,8 @@ import java.util.ArrayList;
 
 import static me.shufy.john.util.JohnUtility.bold;
 
-public class JohnRod {
-    ItemStack johnRod;
-    public JohnRod() {
-        this.johnRod = johnRodItem();
-    }
-    private ItemStack johnRodItem() {
+public class JohnRod extends GeneralJohnItem {
+    public ItemStack getItemStack() {
         ItemStack johnRod = new ItemStack(Material.FISHING_ROD);
         ItemMeta johnRodMeta = johnRod.getItemMeta();
         johnRodMeta.setDisplayName(bold(ChatColor.LIGHT_PURPLE) + "The John Deflector Rod");
@@ -24,9 +21,6 @@ public class JohnRod {
         }});
         johnRodMeta.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
         johnRod.setItemMeta(johnRodMeta);
-        return johnRod;
-    }
-    public ItemStack getItemStack() {
         return johnRod;
     }
 }

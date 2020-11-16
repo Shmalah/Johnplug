@@ -1,5 +1,6 @@
 package me.shufy.john.items.stupid.boat;
 
+import me.shufy.john.general.item.GeneralJohnItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,9 +11,10 @@ import java.util.ArrayList;
 
 import static me.shufy.john.util.JohnUtility.bold;
 
-public class JohnBoat {
-    public JohnBoat() {
-
+public class JohnBoat extends GeneralJohnItem {
+    @Override
+    public ItemStack getItemStack() {
+        return johnBoat();
     }
     public static ItemStack johnBoat() {
         ItemStack boat = new ItemStack(Material.ACACIA_BOAT);

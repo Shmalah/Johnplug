@@ -36,9 +36,18 @@ public class DebugCommands implements CommandExecutor {
                             john = new JohnNpc(player.getLocation());
                             john.spawn(player.getLocation().getWorld().getPlayers());
                             john.autoTarget();
+                            break;
                         case "johnstop":
                             if (john != null)
                                 john.stopAutoTarget();
+                            break;
+                        case "johndestroy":
+                            if (john != null)
+                                john.destroy();
+                            break;
+                        case "johncontinue":
+                            if (john != null)
+                                john.autoTarget();
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

@@ -7,6 +7,7 @@ import me.shufy.john.scare.Spooker;
 import me.shufy.john.util.JohnUtility;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
@@ -134,10 +135,12 @@ public class JohnNpc {
 
     public boolean isAutoTargeting = false;
     public BukkitTask autoTargetTask;
+    public BukkitTask followTask;
 
     public void autoTarget() {
         if (isAutoTargeting)
             return;
+        isAutoTargeting = true;
         autoTargetTask = new BukkitRunnable() {
             private Player target = null;
             private int noAttackTicks = 6;
@@ -157,12 +160,12 @@ public class JohnNpc {
                 // go after them if they exist
                 if (target != null) {
                     // attack if it can
-                    if (canAttack()) attack(target);
+                    if (canAttack(target)) attack(target);
                 }
                 ticks++;
             }
-            private boolean canAttack() {
-                return ticks % noAttackTicks == 0;
+            private boolean canAttack(Player target) {
+                return ticks % noAttackTicks == 0 && target.getGameMode().equals(GameMode.SURVIVAL) || target.getGameMode().equals(GameMode.ADVENTURE);
             }
         }.runTaskTimer(Spooker.plugin, 0, 1L);
     }
@@ -171,6 +174,7 @@ public class JohnNpc {
         if (!isAutoTargeting)
             return;
         autoTargetTask.cancel();
+        followTask.cancel();
         isAutoTargeting = false;
     }
 
@@ -178,7 +182,7 @@ public class JohnNpc {
         if (player == null)
             player = JohnUtility.getClosestPlayer(npc.getBukkitEntity());
         Player finalPlayer = player;
-        new BukkitRunnable() {
+        followTask = new BukkitRunnable() {
             @Override
             public void run() {
                 Vector vDelta = finalPlayer.getLocation().toVector().subtract(getNpc().getBukkitEntity().getLocation().toVector()).normalize().multiply(0.3d);
@@ -191,8 +195,17 @@ public class JohnNpc {
     }
 
     public void attack(Player player) {
-        if (player.getLocation().distance(getNpc().getBukkitEntity().getLocation()) <= 3)
-            player.damage(2.5d, getNpc().getBukkitEntity());
+        try {
+            if (player.getLocation().distance(getNpc().getBukkitEntity().getLocation()) <= 3) {
+                // swing john arm
+                for (Player johnPlayer : spawnLocation.getWorld().getPlayers())
+                    ((CraftPlayer)johnPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutAnimation(npc, 0)); // 0 = left arm swing
+                // do damage
+                player.damage(2.5d, getNpc().getBukkitEntity());
+            }
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not attack player \"" + player.getName() + "\": " + ex.getMessage());
+        }
     }
 
     public void destroy() {
