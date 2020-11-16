@@ -2,6 +2,7 @@ package me.shufy.john.events;
 
 
 import me.shufy.john.Main;
+import me.shufy.john.util.SoundInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -26,7 +27,11 @@ public abstract class JohnEvent {
     Collection<Player> players;
 
     double chance;
+    int afterEventRestPeriod = 5;
+    int eventDuration;
     int duration;
+
+    static boolean eventInstanceRunning;
 
     boolean ignoreChance = false;
     boolean eventRunning = false;
@@ -39,8 +44,8 @@ public abstract class JohnEvent {
             return;
         this.displayName = displayName;
         this.duration = duration;
+        this.eventDuration = duration;
         this.chance = chance;
-        this.displayName = bold(ChatColor.GOLD) + name;
         this.eventWorld = eventWorld;
         this.eventDescription = eventDescription;
         this.name = name;
@@ -52,7 +57,7 @@ public abstract class JohnEvent {
             @Override
             public void run() {
                 if (ThreadLocalRandom.current().nextDouble() < chance || isIgnoreChance()) {
-                    if (!eventRunning)
+                    if (!eventRunning && !eventInstanceRunning) // can't have more than one event happening at once
                         runEvent();
                 }
             }
@@ -60,6 +65,7 @@ public abstract class JohnEvent {
     }
 
     private void runEvent() {
+        eventInstanceRunning = true;
         eventRunning = true;
         if (isEventStartCountdown()) {
             onEventCountdownStart();
@@ -67,10 +73,18 @@ public abstract class JohnEvent {
                 private int secondsLeft = 10;
                 @Override
                 public void run() {
-                    if (secondsLeft == 1)
+                    if (secondsLeft == 1) {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                onEventStart();
+                                startEventTick();
+                            }
+                        }.runTaskLater(plugin, 20L);
                         this.cancel();
+                    }
                     for (Player player : getPlayers()) {
-                        if (secondsLeft > 7) {
+                        if (secondsLeft > 5) {
                             player.sendTitle(displayName, secondsLeft + " seconds until event starts", 10, 60, 10);
                         } else {
                             player.sendTitle(bold(ChatColor.RED) + secondsLeft + " seconds until event starts", eventDescription, 10, 60, 10);
@@ -81,11 +95,7 @@ public abstract class JohnEvent {
                 }
             }.runTaskTimerAsynchronously(plugin, 0, 20L);
         }
-        onEventStart();
-        startEventTick();
     }
-
-    // TODO finish john event class
 
     private void startEventTick() {
         new BukkitRunnable() {
@@ -98,23 +108,60 @@ public abstract class JohnEvent {
                     duration--;
                 }
                 if ((duration % 15 == 0 && duration != 0) || duration <= 10 && duration > 0) {
-                    if (duration <= 10)
+                    if (ticks % 20 == 0)
+                        onCountdownAnnounce(duration);
+                    if (duration == 10 && ticks % 20 == 0)
                         onEventEndCountdownStart();
-                } else if (duration == 0) {
+                } else if (duration == 0 && ticks % 20 == 0) {
                     onEventEnd();
+                    endEvent();
                     this.cancel();
                 }
             }
         }.runTaskTimer(plugin, 0, 1L);
     }
 
+    public void broadcastSound(Sound sound, SoundInfo volumePitch) {
+        for (Player player : getPlayers()) {
+            player.playSound(player.getLocation(), sound, volumePitch.volume, volumePitch.pitch);
+        }
+    }
+
+    public void broadcastMsg(String message, boolean playSound) {
+        for (Player player : getPlayers()) {
+            player.sendMessage(message);
+            if (playSound)
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
+        }
+    }
+
+    public void broadcastMsg(String message) {
+        for (Player player : getPlayers()) {
+            player.sendMessage(message);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
+        }
+    }
+
+    public void broadcastTitle(String title, String subtitle) {
+        for (Player player : getPlayers()) {
+            player.sendTitle(title, subtitle, 10, 60, 10);
+        }
+    }
     private void endEvent() {
-        eventRunning = false;
+        this.duration = this.eventDuration; // reset event timer back to original
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                eventRunning = false;
+                eventInstanceRunning = false;
+            }
+        }.runTaskLater(plugin, (20L * getAfterEventRestPeriod())); // aka seconds
     }
 
     public abstract void onEventCountdownStart();
     public abstract void onEventStart();
     public abstract void everyEventTick();
+    public abstract void onCountdownAnnounce(int secondsLeft);
     public abstract void onEventEndCountdownStart();
     public abstract void onEventEnd();
 
@@ -204,5 +251,17 @@ public abstract class JohnEvent {
 
     public int getDuration() {
         return duration;
+    }
+
+    public int getAfterEventRestPeriod() {
+        return afterEventRestPeriod;
+    }
+
+    public void setAfterEventRestPeriod(int afterEventRestPeriod) {
+        this.afterEventRestPeriod = afterEventRestPeriod;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
