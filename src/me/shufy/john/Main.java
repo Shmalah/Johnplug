@@ -2,6 +2,7 @@ package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnListener;
 import me.shufy.john.corenpc.JohnNpc;
+import me.shufy.john.events.mlg.MlgEventListener;
 import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.egg.JohnEggListener;
 import me.shufy.john.items.johnrod.JohnRodListener;
@@ -33,6 +34,9 @@ public class Main extends JavaPlugin {
         Npc.initializeNpcs();
         new Spooker();
         new SpookerStorm();
+
+        // john events
+        getServer().getPluginManager().registerEvents(new MlgEventListener(), this);
 
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");

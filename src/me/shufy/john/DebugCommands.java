@@ -52,6 +52,7 @@ public class DebugCommands implements CommandExecutor {
                             break;
                         case "event":
                             MlgEvent mlgEvent = new MlgEvent(player.getWorld(), 30, 0.1d);
+                            mlgEvent.setAfterEventRestPeriod(15);
                             mlgEvent.setIgnoreChance(true);
                             break;
                         case "particleray":

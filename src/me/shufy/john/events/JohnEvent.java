@@ -32,6 +32,8 @@ public abstract class JohnEvent {
     int duration;
 
     static boolean eventInstanceRunning;
+    static String eventInstanceName = "NONE";
+    static JohnEvent eventInstance = null;
 
     boolean ignoreChance = false;
     boolean eventRunning = false;
@@ -66,6 +68,8 @@ public abstract class JohnEvent {
 
     private void runEvent() {
         eventInstanceRunning = true;
+        eventInstanceName = this.name;
+        eventInstance = this;
         eventRunning = true;
         if (isEventStartCountdown()) {
             onEventCountdownStart();
@@ -153,6 +157,8 @@ public abstract class JohnEvent {
             @Override
             public void run() {
                 eventRunning = false;
+                eventInstanceName = "NONE";
+                eventInstance = null;
                 eventInstanceRunning = false;
             }
         }.runTaskLater(plugin, (20L * getAfterEventRestPeriod())); // aka seconds
@@ -263,5 +269,21 @@ public abstract class JohnEvent {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public static boolean isEventInstanceRunning() {
+        return eventInstanceRunning;
+    }
+
+    public static String getEventInstanceName() {
+        return eventInstanceName;
+    }
+
+    public int getEventDuration() {
+        return eventDuration;
+    }
+
+    public static JohnEvent getEventInstance() {
+        return eventInstance;
     }
 }

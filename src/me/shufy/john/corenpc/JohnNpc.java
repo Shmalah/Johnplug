@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -164,6 +165,31 @@ public class JohnNpc {
                 ticks++;
             }
         }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
+    }
+
+    public BukkitTask targetTask;
+
+    public void targetPlayer(Player player) {
+        targetTask = new BukkitRunnable() {
+            private int ticks = 0;
+            @Override
+            public void run() {
+                try {
+                    look(player.getEyeLocation());
+                    if (npcLoc().distance(player.getLocation()) > 2.5)
+                        move(player.getLocation().toVector().subtract(npcLoc().toVector()).normalize().multiply(0.3d));
+                    if (ticks % 5 == 0)
+                        attack(player);
+
+                } catch (Exception ex) {
+                    if (ticks % 20 == 0)  {
+                        // aka 1 second
+                        Bukkit.getLogger().log(Level.WARNING, String.format("Error during john's auto targeting: %s", ex.getMessage()));
+                    }
+                }
+                ticks++;
+            }
+        }.runTaskTimer(Main.getPlugin(Main.class), 0, 1L);
     }
 
     public void stopAutoTarget() {
