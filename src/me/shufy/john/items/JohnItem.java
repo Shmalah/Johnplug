@@ -33,7 +33,7 @@ public class JohnItem {
         this.itemStack = new ItemStack(randomMaterial());
         this.type = this.itemStack.getType();
         makeJohnItem(this.itemStack, this.itemName);
-        JohnItemListener.getJohnItems().add(this); // only used for debug purposes. never use for tracking items across server instances or across /reload
+     //   JohnItemListener.getJohnItems().add(this); // only used for debug purposes. never use for tracking items across server instances or across /reload
     }
     public static ItemAbility getItemAbility(ItemStack itemStack) {
         return ItemAbility.valueOf(getLoreEntry(itemStack, 3).replace(ChatColor.RED.toString(), "").trim());
