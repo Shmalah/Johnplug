@@ -177,6 +177,15 @@ public final class JohnUtility {
 
         return (length < 0.1);
     }
+    public static boolean loreContains(ItemStack item, String contains) {
+        if (!item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().isEmpty())
+            return false;
+        for (String line : item.getItemMeta().getLore()) {
+            if (line.contains(contains))
+                return true;
+        }
+        return false;
+    }
     public static Location randomLocationNearPlayer(Player player, int withinRadius) {
         return player.getLocation().add(randomInt(withinRadius), randomInt(withinRadius), randomInt(withinRadius));
     }

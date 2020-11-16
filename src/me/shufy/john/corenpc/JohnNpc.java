@@ -3,6 +3,8 @@ package me.shufy.john.corenpc;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.shufy.john.Main;
+import me.shufy.john.scare.Spooker;
+import me.shufy.john.util.JohnUtility;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,6 +13,7 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -127,6 +130,67 @@ public class JohnNpc {
                 vKb.multiply(0.5); // halve the vector
             }
         }.runTaskTimer(me.shufy.john.Main.getPlugin(Main.class), 0, 1L);
+    }
+
+    public boolean isAutoTargeting = false;
+    public BukkitTask autoTargetTask;
+
+    public void autoTarget() {
+        if (isAutoTargeting)
+            return;
+        autoTargetTask = new BukkitRunnable() {
+            private Player target = null;
+            private int noAttackTicks = 6;
+            private int ticks = 0;
+            @Override
+            public void run() {
+                // select target
+                if (!Bukkit.getOnlinePlayers().isEmpty()) {
+                    if (!spawnLocation.getWorld().getPlayers().isEmpty()) {
+                        if (target == null || JohnUtility.getClosestPlayer(getNpc().getBukkitEntity()) != target)
+                            target = JohnUtility.getClosestPlayer(getNpc().getBukkitEntity());
+                    }
+                }
+                // go after them if they exist
+                if (target != null) {
+                    follow(target);
+                    // attack if it can
+                    if (canAttack()) attack(target);
+                }
+                ticks++;
+            }
+            private boolean canAttack() {
+                return ticks % noAttackTicks == 0;
+            }
+        }.runTaskTimer(Spooker.plugin, 0, 1L);
+    }
+
+    public void stopAutoTarget() {
+        if (!isAutoTargeting)
+            return;
+        autoTargetTask.cancel();
+        isAutoTargeting = false;
+    }
+
+    public void follow (Player player) {
+        if (player == null)
+            player = JohnUtility.getClosestPlayer(npc.getBukkitEntity());
+        Player finalPlayer = player;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Vector vDelta = finalPlayer.getLocation().toVector().subtract(getNpc().getBukkitEntity().getLocation().toVector()).normalize().multiply(0.3d);
+                look(finalPlayer.getEyeLocation()); // look into the eyes of your victim.
+                if (getNpc().getBukkitEntity().getLocation().getBlock().isLiquid())
+                    vDelta.multiply(0.5);
+                move(vDelta.getX(), vDelta.getY(), vDelta.getZ()); // move toward your victim, john. It's time.
+            }
+        }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
+    }
+
+    public void attack(Player player) {
+        if (player.getLocation().distance(getNpc().getBukkitEntity().getLocation()) <= 3)
+            player.damage(2.5d, getNpc().getBukkitEntity());
     }
 
     public void destroy() {

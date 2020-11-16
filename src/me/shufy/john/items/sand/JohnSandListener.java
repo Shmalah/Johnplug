@@ -2,22 +2,21 @@ package me.shufy.john.items.sand;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import static me.shufy.john.util.JohnUtility.loreContains;
+import static me.shufy.john.util.JohnUtility.randomMaterialWhoContains;
 
 public class JohnSandListener implements Listener {
     // WHEN PLAYER USES THE SAND
     @EventHandler
-    public void blockPlace (PlayerInteractEvent e) {
-        if (e.getAction().equals(Action.RIGHT_CLICK_AIR))
-        if (e.getPlayer().getInventory().getItemInMainHand().hasItemMeta())
-            if (e.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasLore())
-                if (e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLore().get(0).contains("The John Deflector Rod")) {
-
-                }
+    public void blockPlace (BlockPlaceEvent e) {
+        if (loreContains(e.getPlayer().getInventory().getItemInMainHand(), "John's beloved sand.")) {
+            e.getBlockPlaced().setType(randomMaterialWhoContains("SAND"));
+        }
     }
 
     // PLAYER OBTAINING THE SAND

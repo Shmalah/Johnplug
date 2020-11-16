@@ -10,11 +10,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 public class DebugCommands implements CommandExecutor {
 
     public static boolean debugMode = false;
+
+    JohnNpc john;
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
@@ -32,18 +33,12 @@ public class DebugCommands implements CommandExecutor {
                             player.getInventory().addItem(JohnBoat.johnBoat());
                             break;
                         case "johnjohn":
-                            JohnNpc john = new JohnNpc(player.getLocation());
+                            john = new JohnNpc(player.getLocation());
                             john.spawn(player.getLocation().getWorld().getPlayers());
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    Vector vDelta = player.getLocation().toVector().subtract(john.getNpc().getBukkitEntity().getLocation().toVector()).normalize().multiply(0.3d);
-                                    john.look(player.getEyeLocation()); // look into the eyes of your victim.
-                                    if (john.getNpc().getBukkitEntity().getLocation().getBlock().isLiquid())
-                                        vDelta.multiply(0.5);
-                                    john.move(vDelta.getX(), vDelta.getY(), vDelta.getZ()); // move toward your victim, john. It's time.
-                                }
-                            }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
+                            john.autoTarget();
+                        case "johnstop":
+                            if (john != null)
+                                john.stopAutoTarget();
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);
