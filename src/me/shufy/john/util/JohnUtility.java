@@ -47,6 +47,18 @@ public final class JohnUtility {
         }
         return closestLivingEntity;
     }
+    public static Player getClosestPlayer(Location loc) {
+        if (loc.getWorld().getPlayers().isEmpty())
+            return null;
+        Player closest = null;
+        for (Player player : loc.getWorld().getPlayers()) {
+            if (closest == null || player.getLocation().distance(loc) < closest.getLocation().distance(loc)) {
+                if (!player.isDead())
+                    closest = player;
+            }
+        }
+        return closest;
+    }
     public static Player getClosestPlayerExclusive(Player exFrom) {
         Player closest = getClosestPlayer(exFrom);
         if (closest == null || closest.equals(exFrom)) {

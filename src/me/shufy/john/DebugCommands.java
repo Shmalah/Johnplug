@@ -1,6 +1,7 @@
 package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnNpc;
+import me.shufy.john.events.JohnEvent;
 import me.shufy.john.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
@@ -10,6 +11,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import static me.shufy.john.util.JohnUtility.bold;
 
 public class DebugCommands implements CommandExecutor {
 
@@ -48,6 +51,35 @@ public class DebugCommands implements CommandExecutor {
                         case "johncontinue":
                             if (john != null)
                                 john.autoTarget();
+                            break;
+                        case "event":
+                            JohnEvent event = new JohnEvent(player.getWorld(), "Test Event", bold(ChatColor.GOLD) + "TEST EVENT", "This is a test event!", 200, 0.2d) {
+                                @Override
+                                public void onEventCountdownStart() {
+
+                                }
+
+                                @Override
+                                public void onEventStart() {
+
+                                }
+
+                                @Override
+                                public void everyEventTick() {
+
+                                }
+
+                                @Override
+                                public void onEventEndCountdownStart() {
+
+                                }
+
+                                @Override
+                                public void onEventEnd() {
+
+                                }
+                            };
+                            event.setIgnoreChance(true);
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

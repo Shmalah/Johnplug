@@ -3,18 +3,15 @@ package me.shufy.john.corenpc;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.shufy.john.Main;
-import me.shufy.john.scare.Spooker;
 import me.shufy.john.util.JohnUtility;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -104,6 +101,13 @@ public class JohnNpc {
         }
     }
 
+    // move vector overload
+    public void move(Vector v) {
+        if (npcLoc().getBlock().isLiquid())
+            v.multiply(0.5);
+        move(v.getX(), v.getY(), v.getZ());
+    }
+
     public void takeKnockback(Location source, double amount) {
         Vector vKb = npc.getBukkitEntity().getLocation().toVector().subtract(source.toVector()).multiply(amount);
         new BukkitRunnable() {
@@ -133,56 +137,45 @@ public class JohnNpc {
         }.runTaskTimer(me.shufy.john.Main.getPlugin(Main.class), 0, 1L);
     }
 
-    public boolean isAutoTargeting = false;
-    public BukkitTask autoTargetTask;
-    public BukkitTask followTask;
+    public boolean targeting = false;
 
     public void autoTarget() {
-        if (isAutoTargeting)
+        if (targeting)
             return;
-        isAutoTargeting = true;
-        autoTargetTask = new BukkitRunnable() {
-            private Player target = null;
-            private int noAttackTicks = 6;
+        targeting = true;
+        new BukkitRunnable() {
             private int ticks = 0;
             @Override
             public void run() {
-                // select target
-                if (!Bukkit.getOnlinePlayers().isEmpty()) {
-                    if (!spawnLocation.getWorld().getPlayers().isEmpty()) {
-                        if (target == null || JohnUtility.getClosestPlayer(getNpc().getBukkitEntity()) != target) {
-                            target = JohnUtility.getClosestPlayer(getNpc().getBukkitEntity());
-                            follow(target); // only follow if it's a new player
-                        }
+                try {
+                    if (!targeting) this.cancel();
+                    look(closestPlayer().getEyeLocation());
+                    if (npcLoc().distance(closestPlayer().getLocation()) > 2.5)
+                        move(closestPlayerStep().multiply(0.3d));
+                    if (ticks % 5 == 0)
+                        attack(closestPlayer());
 
+                } catch (Exception ex) {
+                    if (ticks % 20 == 0)  {
+                        // aka 1 second
+                      //  Bukkit.getLogger().log(Level.WARNING, String.format("Error during john's auto targeting: %s", ex.getMessage()));
                     }
-                }
-                // go after them if they exist
-                if (target != null) {
-                    // attack if it can
-                    if (canAttack(target)) attack(target);
                 }
                 ticks++;
             }
-            private boolean canAttack(Player target) {
-                return ticks % noAttackTicks == 0 && target.getGameMode().equals(GameMode.SURVIVAL) || target.getGameMode().equals(GameMode.ADVENTURE);
-            }
-        }.runTaskTimer(Spooker.plugin, 0, 1L);
+        }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
     }
 
     public void stopAutoTarget() {
-        if (!isAutoTargeting)
-            return;
-        autoTargetTask.cancel();
-        followTask.cancel();
-        isAutoTargeting = false;
+        targeting = false;
     }
 
+    @Deprecated
     public void follow (Player player) {
         if (player == null)
             player = JohnUtility.getClosestPlayer(npc.getBukkitEntity());
         Player finalPlayer = player;
-        followTask = new BukkitRunnable() {
+       new BukkitRunnable() {
             @Override
             public void run() {
                 Vector vDelta = finalPlayer.getLocation().toVector().subtract(getNpc().getBukkitEntity().getLocation().toVector()).normalize().multiply(0.3d);
@@ -225,6 +218,18 @@ public class JohnNpc {
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, String.format("Tried to destroy the john npc \"%s\" in world \"%s\" for player \"%s\" when an exception occurred: %s", this.hashCode(), spawnLocation.getWorld().getName(), curplayer.getName(), ex.getMessage()));
         }
+    }
+
+    public Location npcLoc() {
+        return getNpc().getBukkitEntity().getLocation();
+    }
+
+    public Player closestPlayer() {
+        return JohnUtility.getClosestPlayer(getNpc().getBukkitEntity().getLocation());
+    }
+
+    public Vector closestPlayerStep() {
+        return closestPlayer().getLocation().toVector().subtract(npcLoc().toVector()).normalize();
     }
 
     // only use with ondisable/when the server is reloading or closing or etc.
