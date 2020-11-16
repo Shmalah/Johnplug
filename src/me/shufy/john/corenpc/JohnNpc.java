@@ -147,13 +147,15 @@ public class JohnNpc {
                 // select target
                 if (!Bukkit.getOnlinePlayers().isEmpty()) {
                     if (!spawnLocation.getWorld().getPlayers().isEmpty()) {
-                        if (target == null || JohnUtility.getClosestPlayer(getNpc().getBukkitEntity()) != target)
+                        if (target == null || JohnUtility.getClosestPlayer(getNpc().getBukkitEntity()) != target) {
                             target = JohnUtility.getClosestPlayer(getNpc().getBukkitEntity());
+                            follow(target); // only follow if it's a new player
+                        }
+
                     }
                 }
                 // go after them if they exist
                 if (target != null) {
-                    follow(target);
                     // attack if it can
                     if (canAttack()) attack(target);
                 }
