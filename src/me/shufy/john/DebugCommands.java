@@ -2,6 +2,7 @@ package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.events.JohnEvent;
+import me.shufy.john.events.bounty.BountyEvent;
 import me.shufy.john.events.mlg.MlgEvent;
 import me.shufy.john.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
@@ -52,16 +53,32 @@ public class DebugCommands implements CommandExecutor {
                                 john.autoTarget();
                             break;
                         case "event":
-                            MlgEvent mlgEvent = new MlgEvent(player.getWorld(), 30, 0.2d);
-                            mlgEvent.setIgnoreChance(true);
+                            BountyEvent bountyEvent = new BountyEvent(player.getWorld(), 0.1d);
+                            bountyEvent.setIgnoreChance(true);
                             break;
                         case "eventdebug":
-                            if (JohnEvent.isEventInstanceRunning())
+                            if (JohnEvent.isEventInstanceRunning()) {
                                 if (JohnEvent.getEventInstance() instanceof MlgEvent) {
                                     MlgEvent mlgEvent1 = (MlgEvent) JohnEvent.getEventInstance();
                                     player.sendMessage(mlgEvent1.deathList.toString());
                                     player.sendMessage(mlgEvent1.winList.toString());
                                 }
+                            } else if (BountyEvent.isInstanceRunning()) {
+                               BountyEvent runningBounty = BountyEvent.getRunningInstance();
+                               if (runningBounty != null) {
+                                   // debug placeholder for later
+                                   player.sendMessage("Bounty Event World: " + runningBounty.getBountyEventWorld().getName());
+                                   player.sendMessage("Hunter: " + runningBounty.getHunter().getName() + ", Bounty/Target: " + runningBounty.getTarget().getName());
+                               }
+                            }
+                            break;
+                        case "eventcollide":
+                            for (int i = 0; i < 50; i++) {
+                                BountyEvent b = new BountyEvent(player.getWorld(), 0.1d);
+                                b.setIgnoreChance(true);
+                                MlgEvent m = new MlgEvent(player.getWorld(), 20, 0.2d);
+                                m.setIgnoreChance(true);
+                            }
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

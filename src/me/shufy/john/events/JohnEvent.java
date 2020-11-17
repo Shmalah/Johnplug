@@ -2,6 +2,7 @@ package me.shufy.john.events;
 
 
 import me.shufy.john.Main;
+import me.shufy.john.events.bounty.BountyEvent;
 import me.shufy.john.util.SoundInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -59,7 +60,7 @@ public abstract class JohnEvent {
             @Override
             public void run() {
                 if (ThreadLocalRandom.current().nextDouble() < chance || isIgnoreChance()) {
-                    if (!eventRunning && !eventInstanceRunning) // can't have more than one event happening at once
+                    if (!eventRunning && !eventInstanceRunning && !BountyEvent.isInstanceRunning()) // can't have more than one event happening at once
                         runEvent();
                 }
             }

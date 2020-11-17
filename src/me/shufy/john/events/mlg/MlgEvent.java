@@ -125,7 +125,6 @@ public class MlgEvent extends JohnEvent {
                         @Override
                         public void run() {
                             if (player.isDead() || ticks > 200) {
-                                npc.targetTask.cancel();
                                 npc.destroy();
                                 this.cancel();
                             }

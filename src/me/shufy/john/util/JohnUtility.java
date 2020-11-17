@@ -1,10 +1,12 @@
 package me.shufy.john.util;
 
 import me.shufy.john.DebugCommands;
+import me.shufy.john.Main;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -189,6 +191,32 @@ public final class JohnUtility {
 
         return (length < 0.1);
     }
+
+    public static final Main plugin = Main.getPlugin(Main.class);
+
+    public static void johnBan(Player player, int seconds) {
+        if (seconds <= 0)
+            return;
+        boolean playerBanned = Bukkit.getBanList(BanList.Type.NAME).getBanEntries().stream().anyMatch(banEntry -> banEntry.getTarget().equals(player.getName()));
+        if (!playerBanned) {
+            // ban player
+            Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.BOLD) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING!", null, null);
+            player.kickPlayer(bold(ChatColor.RED) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING WHEN YOU WERE A BOUNTY TARGET");
+            new BukkitRunnable() {
+                private int secondsLeft = seconds;
+                @Override
+                public void run() {
+                    // update ban time every second
+                    secondsLeft--;
+                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.BOLD) + String.format("BANNED FOR %s SECONDS FOR JOHN LOGGING!", secondsLeft), null, null);
+                    if (secondsLeft == 1) {
+                        Bukkit.getBanList(BanList.Type.NAME).pardon(player.getName());
+                        this.cancel();
+                    }
+                }
+            }.runTaskTimer(plugin, 0, 20L);
+        }
+    }
     public static boolean loreContains(ItemStack item, String contains) {
         if (!item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().isEmpty())
             return false;
@@ -197,6 +225,11 @@ public final class JohnUtility {
                 return true;
         }
         return false;
+    }
+    public static void broadcastSound(Sound sound, SoundInfo volumeAndPitch) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.getWorld().playSound(onlinePlayer.getLocation(), sound, volumeAndPitch.volume, volumeAndPitch.pitch);
+        }
     }
     public static Location randomLocationNearPlayer(Player player, int withinRadius) {
         return player.getLocation().add(randomInt(withinRadius), randomInt(withinRadius), randomInt(withinRadius));
