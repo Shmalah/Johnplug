@@ -8,6 +8,7 @@ import me.shufy.john.items.egg.JohnEggListener;
 import me.shufy.john.items.johnrod.JohnRodListener;
 import me.shufy.john.items.sand.JohnSandListener;
 import me.shufy.john.items.stupid.boat.JohnBoatListener;
+import me.shufy.john.player.BlockLogger;
 import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
 import me.shufy.john.scare.SpookerStorm;
@@ -37,6 +38,9 @@ public class Main extends JavaPlugin {
 
         // john events
         getServer().getPluginManager().registerEvents(new MlgEventListener(), this);
+
+        // player loggers
+        getServer().getPluginManager().registerEvents(new BlockLogger(), this);
 
         getCommand("jdb").setExecutor(new DebugCommands());
         getLogger().log(Level.WARNING, "The John plugin has been initialized!");
