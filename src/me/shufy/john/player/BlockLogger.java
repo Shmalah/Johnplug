@@ -40,8 +40,9 @@ public class BlockLogger implements Listener {
     }
 
     private void addBlockEntry(Player player, Block block) {
-        playerBlocks.putIfAbsent(player, new HashSet<Block>(){{add(block);}});
-        Bukkit.getLogger().log(Level.INFO, String.format("Added %s's block \"%s\"", player.getName(), block.getType().name()));
+        playerBlocks.putIfAbsent(player, new HashSet<Block>());
+        playerBlocks.get(player).add(block);
+    //    Bukkit.getLogger().log(Level.INFO, playerBlocks.get(player).size() + " blocks belong to " + player.getName());
     }
 
     private void removeBlockEntry(Player player, Block block) {
@@ -50,6 +51,14 @@ public class BlockLogger implements Listener {
             return;
         }
         playerBlocks.get(player).removeIf(b -> b.equals(block));
-        Bukkit.getLogger().log(Level.INFO, String.format("Removed %s's block \"%s\"", player.getName(), block.getType().name()));
+    //    Bukkit.getLogger().log(Level.INFO, playerBlocks.get(player).size() + " blocks belong to " + player.getName());
+    }
+
+    public static HashMap<Player, Set<Block>> getAllPlayerBlocks() {
+        return playerBlocks;
+    }
+
+    public static Set<Block> getPlayerBlocks(Player player) {
+        return playerBlocks.getOrDefault(player, new HashSet<>());
     }
 }

@@ -6,6 +6,7 @@ import me.shufy.john.util.SoundInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -15,7 +16,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static me.shufy.john.util.JohnUtility.bold;
-import static me.shufy.john.util.JohnUtility.loreContains;
 
 public class MlgEventListener implements Listener {
     @EventHandler
@@ -30,13 +30,16 @@ public class MlgEventListener implements Listener {
         if (JohnEvent.isEventInstanceRunning()) {
             if (JohnEvent.getEventInstanceName().equals("MlgEvent")) {
                 MlgEvent mlgEvent = (MlgEvent)JohnEvent.getEventInstance();
-                if (!mlgEvent.deathList.contains(e.getPlayer())) {
-                    if (loreContains(e.getItemStack(), "The official MLG water bucket. Stop looking at this and land your mlg idiot")) {
-                        // mlg water bucket
-                        e.getPlayer().sendMessage(bold(ChatColor.GOLD) + "YOU COMPLETED THE EVENT!");
-                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-                        mlgEvent.broadcastMsg(bold(ChatColor.GOLD) + e.getPlayer().getName() + bold(ChatColor.GREEN) + " successfully completed the event!", false);
+                if (mlgEvent.playerInEvent(e.getPlayer())) {
+                    // mlg water bucket
+                    if (!e.getBlockFace().equals(BlockFace.UP)) {
+                        e.setCancelled(true);
+                        return;
                     }
+                    mlgEvent.winList.add(e.getPlayer());
+                    e.getPlayer().sendMessage(bold(ChatColor.GOLD) + "YOU COMPLETED THE EVENT!");
+                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+                    mlgEvent.broadcastMsg(bold(ChatColor.GOLD) + e.getPlayer().getName() + bold(ChatColor.GREEN) + " successfully completed the event!", false);
                 }
             }
         }

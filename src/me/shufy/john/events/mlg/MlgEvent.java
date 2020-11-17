@@ -2,7 +2,9 @@ package me.shufy.john.events.mlg;
 
 import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.events.JohnEvent;
+import me.shufy.john.player.BlockLogger;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +22,7 @@ import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
 public class MlgEvent extends JohnEvent {
 
     Collection<Player> deathList;
+    Collection<Player> winList;
 
     public MlgEvent(World eventWorld, int duration, double chance) {
         super(eventWorld, "MlgEvent", bold(ChatColor.BLUE) + "MLG EVENT", "Land the MLG water bucket or face harsh consequences.", duration, chance);
@@ -28,6 +31,7 @@ public class MlgEvent extends JohnEvent {
     @Override
     public void onEventCountdownStart() {
         deathList = new ArrayList<>();
+        winList = new ArrayList<>();
         getPlayers().forEach(player ->  {
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(20);
@@ -40,16 +44,18 @@ public class MlgEvent extends JohnEvent {
     @Override
     public void onEventStart() {
         getPlayers().forEach(player -> {
-            if (player.getLocation().getY() < getEventWorld().getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ()))
-                player.teleport(getEventWorld().getHighestBlockAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ()).getLocation());
-            player.teleport(player.getLocation().add(0, ThreadLocalRandom.current().nextInt(150, 300), 0));
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    // give player the mlg water bucket at a random time
-                    player.getInventory().addItem(mlgWaterBucket());
-                }
-            }.runTaskLater(plugin, ThreadLocalRandom.current().nextInt(1, 5) * 20L);
+            if (!deathList.contains(player)) {
+                if (player.getLocation().getY() < getEventWorld().getHighestBlockYAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ()))
+                    player.teleport(getEventWorld().getHighestBlockAt(player.getLocation().getBlockX(), player.getLocation().getBlockZ()).getLocation());
+                player.teleport(player.getLocation().add(0, ThreadLocalRandom.current().nextInt(150, 300), 0));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        // give player the mlg water bucket at a random time
+                        player.getInventory().addItem(mlgWaterBucket());
+                    }
+                }.runTaskLater(plugin, ThreadLocalRandom.current().nextInt(1, 5) * 20L);
+            }
         });
     }
 
@@ -57,8 +63,19 @@ public class MlgEvent extends JohnEvent {
     public void everyEventTick() {
         getPlayers().forEach(player -> {
             // ANTI CHEAT! :)
-            if (getEventWorld().getHighestBlockAt(player.getLocation()).isLiquid()) {
-                getEventWorld().getHighestBlockAt(player.getLocation()).setType(Material.BEDROCK);
+            if (playerInEvent(player)) {
+                Block blockBelowPlayer = getEventWorld().getHighestBlockAt(player.getLocation());
+                if (!BlockLogger.getPlayerBlocks(player).contains(blockBelowPlayer) || (BlockLogger.getPlayerBlocks(player).contains(blockBelowPlayer) && player.getLocation().distance(blockBelowPlayer.getLocation()) > 20)) {
+                    if (blockBelowPlayer.isLiquid()) {
+                        // They're trying to land in water or somethn that is not theirs
+                        // make a square of bedrock
+                        for (int x = 0; x < 2; x++) {
+                            for (int z = 0; z < 2; z++) {
+                                blockBelowPlayer.getRelative(x, 0, z).setType(Material.BEDROCK);
+                            }
+                        }
+                    }
+                }
             }
         });
     }
@@ -78,28 +95,51 @@ public class MlgEvent extends JohnEvent {
         broadcastMsg(bold(ChatColor.YELLOW) + "THE EVENT HAS CONCLUDED. LOSERS WILL BE PUNISHED.");
         getPlayers().forEach(player -> {
             if (deathList.contains(player)) {
-                player.sendMessage(bold(ChatColor.DARK_RED) + "JOHN IS DISAPPOINTED IN YOU FOR LOSING THE EVENT.");
-                player.getWorld().strikeLightning(player.getLocation());
-                JohnNpc npc = new JohnNpc(randomLocationNearPlayer(player, 10));
-                npc.spawn(Collections.singleton(player));
-                npc.targetPlayer(player);
-                new BukkitRunnable() {
-                    private int ticks = 0;
-                    @Override
-                    public void run() {
-                        if (player.isDead() || ticks > 200) {
-                            npc.targetTask.cancel();
-                            npc.destroy();
-                            this.cancel();
+                if (player.isDead() || !player.isOnline()) {
+                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.RED) + "Ur banned for 30 seconds", null, null);
+                    new BukkitRunnable() {
+                        private int secondsLeft = 30;
+                        @Override
+                        public void run() {
+                            secondsLeft--;
+                            Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.RED) + "Ur banned for " + secondsLeft + " seconds for JOHN LOGGING.", null, null);
+                            player.kickPlayer( bold(ChatColor.RED) + "Ur banned for " + secondsLeft + " seconds for JOHN LOGGING.");
+                            if (secondsLeft == 1) {
+                                Bukkit.getBanList(BanList.Type.NAME).pardon(player.getName());
+                                this.cancel();
+                            }
                         }
-                        ticks++;
-                    }
-                }.runTaskTimer(plugin, 0, 1L);
+                    }.runTaskTimer(plugin, 0, 20L);
+                } else {
+                    player.sendMessage(bold(ChatColor.DARK_RED) + "JOHN IS DISAPPOINTED IN YOU FOR LOSING THE EVENT.");
+                    player.getWorld().strikeLightning(player.getLocation());
+                    JohnNpc npc = new JohnNpc(randomLocationNearPlayer(player, 10));
+                    npc.spawn(Collections.singleton(player));
+                    npc.targetPlayer(player);
+                    new BukkitRunnable() {
+                        private int ticks = 0;
+                        @Override
+                        public void run() {
+                            if (player.isDead() || ticks > 200) {
+                                npc.targetTask.cancel();
+                                npc.destroy();
+                                this.cancel();
+                            }
+                            ticks++;
+                        }
+                    }.runTaskTimer(plugin, 0, 1L);
+                }
             }
             player.getInventory().remove(Material.BUCKET);
             player.getInventory().remove(Material.WATER_BUCKET);
             player.getInventory().remove(Material.LAVA_BUCKET);
+            winList.clear();
+            deathList.clear();
         });
+    }
+
+    public boolean playerInEvent(Player player) {
+        return (!winList.contains(player) && !deathList.contains(player));
     }
 
     private ItemStack mlgWaterBucket() {
