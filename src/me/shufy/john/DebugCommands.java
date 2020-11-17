@@ -54,6 +54,7 @@ public class DebugCommands implements CommandExecutor {
                             break;
                         case "event":
                             BountyEvent bountyEvent = new BountyEvent(player.getWorld(), 0.1d);
+
                             bountyEvent.setIgnoreChance(true);
                             break;
                         case "eventdebug":

@@ -16,11 +16,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.bold;
-import static me.shufy.john.util.JohnUtility.vectorFromLocToLoc;
 
 public class BountyEvent {
 
@@ -43,6 +43,7 @@ public class BountyEvent {
         this.chance = chance;
         this.chanceRunnerTask = chanceRunner().runTaskTimer(plugin, 20L, 20L * 15);
     }
+
     private BukkitRunnable chanceRunner() {
         Bukkit.getLogger().log(Level.INFO, "Activated the bounty event");
         return new BukkitRunnable() {
@@ -52,7 +53,7 @@ public class BountyEvent {
                     if (ignoreChance || ThreadLocalRandom.current().nextDouble() < chance)
                         runBounty();
                 } else {
-                  Bukkit.getLogger().log(Level.INFO, "Bounty event not running because john event instance running = " + JohnEvent.isEventInstanceRunning() + ", player size good = " + (bountyEventWorld.getPlayers().size() >= 2) + " Bounty instances running = " + instanceRunning);
+                //  Bukkit.getLogger().log(Level.INFO, "Bounty event not running because john event instance running = " + JohnEvent.isEventInstanceRunning() + ", player size good = " + (bountyEventWorld.getPlayers().size() >= 2) + " Bounty instances running = " + instanceRunning);
                 }
             }
         };
@@ -76,6 +77,8 @@ public class BountyEvent {
         hasKilled = false;
 
         new BukkitRunnable() {
+            private int ticks = 0;
+            private int seconds = 0;
             @Override
             public void run() {
                 // check every tick or so if bounty is fulfilled
@@ -86,47 +89,44 @@ public class BountyEvent {
                     stopBounty();
                     this.cancel();
                 }
-            }
-        }.runTaskTimer(plugin, 0, 2L);
+                ticks++;
+                if (ticks % 20 == 0)
+                    seconds++;
+                if (((seconds % 15 == 0 && seconds != 120) || seconds >= 110) && ticks % 20 == 0) {
+                    // announce time left
+                    hunter.sendMessage(bold(ChatColor.RED) + "You only have " + bold(ChatColor.AQUA) + (120-seconds) + bold(ChatColor.RED) + " seconds left to annihilate " + bold(ChatColor.GOLD) + target.getName());
+                    hunter.playSound(hunter.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 0.9f, 0.9f);
+                } else if (seconds == 120) {
+                    // END OF BOUNTY
+                    if (!hasKilled) {
+                        JohnNpc john = new JohnNpc(JohnUtility.randomLocationNearPlayer(hunter, 5));
+                        Bukkit.broadcastMessage(bold(ChatColor.GOLD) + hunter.getName() + bold(ChatColor.RED) + " failed to fulfill their bounty on " + bold(ChatColor.AQUA) + target.getName());
+                        JohnUtility.broadcastSound(Sound.ENTITY_ENDERMAN_STARE, new SoundInfo(1f, ThreadLocalRandom.current().nextFloat()));
+                        JohnUtility.broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL, new SoundInfo(1f, ThreadLocalRandom.current().nextFloat()));
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                // END OF BOUNTY
-                if (!hasKilled) {
-                    JohnNpc john = new JohnNpc(JohnUtility.randomLocationNearPlayer(hunter, 5));
-                    Bukkit.broadcastMessage(bold(ChatColor.GOLD) + hunter.getName() + bold(ChatColor.RED) + " failed to fulfill their bounty on " + bold(ChatColor.AQUA) + target.getName());
-                    JohnUtility.broadcastSound(Sound.ENTITY_ENDERMAN_STARE, new SoundInfo(1f, ThreadLocalRandom.current().nextFloat()));
-                    JohnUtility.broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL, new SoundInfo(1f, ThreadLocalRandom.current().nextFloat()));
+                        john.spawn(Collections.singleton(hunter));
 
-                    BukkitTask johnTask = new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            // CONTROL JOHN
-                            john.move(vectorFromLocToLoc(john.npcLoc(), hunter.getLocation()).normalize().multiply(0.4d));
-                            john.look(hunter.getEyeLocation());
-                            if (john.npcLoc().distance(hunter.getLocation()) <= 3)
-                                john.attack(hunter);
-                        }
-                    }.runTaskTimer(plugin, 3L, 1L);
+                        john.targetPlayer(hunter);
 
-                    hunter.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20*15, 2));
-                    hunter.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20*15, 1));
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            // cleanup john npc 15 seconds after he spawns
-                            johnTask.cancel();
-                            john.destroy();
-                            for (PotionEffect activePotionEffect : hunter.getActivePotionEffects()) {
-                                hunter.removePotionEffect(activePotionEffect.getType());
+                        hunter.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20*15, 2));
+                        hunter.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20*15, 1));
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                // cleanup john npc 15 seconds after he spawns
+                                john.destroy();
+                                for (PotionEffect activePotionEffect : hunter.getActivePotionEffects()) {
+                                    hunter.removePotionEffect(activePotionEffect.getType());
+                                }
+                                stopBounty();
                             }
-                            stopBounty();
-                        }
-                    }.runTaskLater(plugin, 20L * 15);
+                        }.runTaskLater(plugin, 20L * 15);
+                    }
+                    this.cancel();
                 }
             }
-        }.runTaskLater(plugin, 20L * 120);
+        }.runTaskTimer(plugin, 0, 1L);
     }
 
     private void stopBounty() {

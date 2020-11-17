@@ -8,8 +8,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class BountyEventListener implements Listener {
@@ -29,6 +32,31 @@ public class BountyEventListener implements Listener {
 
     boolean johnLoggerRunning = false;
 
+    UUID savedHunterUuid = null;
+
+    @EventHandler
+    public void hunterLeave (PlayerQuitEvent e) {
+        if (BountyEvent.isInstanceRunning()) {
+            BountyEvent runningBounty = BountyEvent.getRunningInstance();
+            if (e.getPlayer().getUniqueId().equals(runningBounty.getHunter().getUniqueId())) {
+                Bukkit.getLogger().log(Level.INFO, "Saving hunter " + e.getPlayer().getName() + "(" + e.getPlayer().getUniqueId().toString() + ") cause they left ");
+                savedHunterUuid = e.getPlayer().getUniqueId();
+            }
+        }
+    }
+
+    @EventHandler
+    public void hunterJoinBack (PlayerJoinEvent e) {
+        if (BountyEvent.isInstanceRunning()) {
+            BountyEvent runningBounty = BountyEvent.getRunningInstance();
+            if (savedHunterUuid != null && e.getPlayer().getUniqueId().equals(savedHunterUuid)) {
+                Bukkit.getLogger().log(Level.INFO, "Restoring hunter " + e.getPlayer().getName() + "(" + e.getPlayer().getUniqueId().toString() + ") cause they joined back and matched UUID \"" + savedHunterUuid.toString() + "\"");
+                runningBounty.hunter = e.getPlayer();
+                savedHunterUuid = null;
+            }
+        }
+    }
+
     @EventHandler
     public void onPlayerDamage (EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
@@ -39,9 +67,9 @@ public class BountyEventListener implements Listener {
                 BountyEvent runningBounty = BountyEvent.getRunningInstance();
                 if (damager.equals(runningBounty.hunter) && player.equals(runningBounty.target)) {
                     // the hunter just damaged the target
-                    Bukkit.getLogger().log(Level.INFO, "John combat log for bounty event has been triggered! 10 seconds left.");
                     if (johnLoggerRunning)
                         return;
+                    Bukkit.getLogger().log(Level.INFO, "John combat log for bounty event has been triggered! 10 seconds left.");
                     johnLoggerRunning = true;
                     new BukkitRunnable() {
                         int ticks = 0;

@@ -233,7 +233,8 @@ public class JohnNpc {
             return;
         }
         Player curplayer = null;
-        targetTask.cancel();
+        if (targetTask != null)
+            targetTask.cancel();
         try {
             for (Player player : spawnLocation.getWorld().getPlayers()) {
                 curplayer = player;
