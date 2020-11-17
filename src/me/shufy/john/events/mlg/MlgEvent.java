@@ -15,14 +15,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.bold;
 import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
 
 public class MlgEvent extends JohnEvent {
 
-    Collection<Player> deathList;
-    Collection<Player> winList;
+    public Collection<Player> deathList;
+    public Collection<Player> winList;
 
     public MlgEvent(World eventWorld, int duration, double chance) {
         super(eventWorld, "MlgEvent", bold(ChatColor.BLUE) + "MLG EVENT", "Land the MLG water bucket or face harsh consequences.", duration, chance);
@@ -33,12 +34,15 @@ public class MlgEvent extends JohnEvent {
         deathList = new ArrayList<>();
         winList = new ArrayList<>();
         getPlayers().forEach(player ->  {
-            player.setGameMode(GameMode.SURVIVAL);
-            player.setHealth(20);
-            player.setFoodLevel(20);
-            player.sendMessage(bold(ChatColor.YELLOW) + "Even if you die before the event even starts, you LOSE!");
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_COW_BELL, 1f, ThreadLocalRandom.current().nextFloat());
+            if (!player.isDead()) {
+                player.setGameMode(GameMode.SURVIVAL);
+                player.setHealth(20);
+                player.setFoodLevel(20);
+                player.sendMessage(bold(ChatColor.YELLOW) + "Even if you die before the event even starts, you LOSE!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_COW_BELL, 1f, ThreadLocalRandom.current().nextFloat());
+            }
         });
+        getPlayers().removeIf(p -> p.isDead() || !p.isOnline());
     }
 
     @Override
@@ -94,7 +98,7 @@ public class MlgEvent extends JohnEvent {
     public void onEventEnd() {
         broadcastMsg(bold(ChatColor.YELLOW) + "THE EVENT HAS CONCLUDED. LOSERS WILL BE PUNISHED.");
         getPlayers().forEach(player -> {
-            if (deathList.contains(player)) {
+            if (deathList.contains(player) && !winList.contains(player)) {
                 if (player.isDead() || !player.isOnline()) {
                     Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.RED) + "Ur banned for 30 seconds", null, null);
                     new BukkitRunnable() {
@@ -129,6 +133,10 @@ public class MlgEvent extends JohnEvent {
                         }
                     }.runTaskTimer(plugin, 0, 1L);
                 }
+            } else if (deathList.contains(player) && winList.contains(player)) {
+                Bukkit.getLogger().log(Level.SEVERE, String.format("Player %s is in both winner list and loser list! This isn't supposed to happen.", player.getName()));
+                Bukkit.getLogger().log(Level.INFO, "LOSERS: " + deathList.toString());
+                Bukkit.getLogger().log(Level.INFO, "WINNERS: " + winList.toString());
             }
             player.getInventory().remove(Material.BUCKET);
             player.getInventory().remove(Material.WATER_BUCKET);

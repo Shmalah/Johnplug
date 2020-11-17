@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 
+@Deprecated
 public class PacketSender {
 
     public enum PacketTypeEnum {

@@ -2,7 +2,6 @@ package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnListener;
 import me.shufy.john.corenpc.JohnNpc;
-import me.shufy.john.events.bounty.BountyEventListener;
 import me.shufy.john.events.mlg.MlgEventListener;
 import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.egg.JohnEggListener;
@@ -39,7 +38,6 @@ public class Main extends JavaPlugin {
 
         // john events
         getServer().getPluginManager().registerEvents(new MlgEventListener(), this);
-        getServer().getPluginManager().registerEvents(new BountyEventListener(), this);
 
         // player loggers
         getServer().getPluginManager().registerEvents(new BlockLogger(), this);

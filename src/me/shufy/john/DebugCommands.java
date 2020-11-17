@@ -1,6 +1,7 @@
 package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnNpc;
+import me.shufy.john.events.JohnEvent;
 import me.shufy.john.events.mlg.MlgEvent;
 import me.shufy.john.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
@@ -51,9 +52,16 @@ public class DebugCommands implements CommandExecutor {
                                 john.autoTarget();
                             break;
                         case "event":
-                            MlgEvent mlgEvent = new MlgEvent(player.getWorld(), 30, 0.1d);
-                            mlgEvent.setAfterEventRestPeriod(15);
+                            MlgEvent mlgEvent = new MlgEvent(player.getWorld(), 30, 0.2d);
                             mlgEvent.setIgnoreChance(true);
+                            break;
+                        case "eventdebug":
+                            if (JohnEvent.isEventInstanceRunning())
+                                if (JohnEvent.getEventInstance() instanceof MlgEvent) {
+                                    MlgEvent mlgEvent1 = (MlgEvent) JohnEvent.getEventInstance();
+                                    player.sendMessage(mlgEvent1.deathList.toString());
+                                    player.sendMessage(mlgEvent1.winList.toString());
+                                }
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

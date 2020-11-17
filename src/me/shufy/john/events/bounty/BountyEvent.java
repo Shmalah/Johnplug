@@ -1,62 +1,47 @@
 package me.shufy.john.events.bounty;
 
-import me.shufy.john.events.JohnEvent;
-import me.shufy.john.util.JohnUtility;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import me.shufy.john.Main;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static me.shufy.john.util.JohnUtility.bold;
-import static me.shufy.john.util.JohnUtility.randomInt;
+public class BountyEvent {
 
-public class BountyEvent extends JohnEvent {
+    public static final Main plugin = Main.getPlugin(Main.class);
 
-    Player target;
-    Player hunter;
+    private World bountyEventWorld;
+    private BukkitTask chanceRunnerTask;
 
-    public BountyEvent(World eventWorld, int duration, double chance) {
-        super(eventWorld, "BountyEvent", bold(ChatColor.DARK_RED) + "BOUNTY EVENT", "Kill the specified target", duration, chance);
-        this.setEventStartCountdown(false);
+    Player hunter, target;
+
+    private static BountyEvent runningInstance;
+    private static boolean instanceIsRunning;
+    private static boolean isRunning;
+
+    private double chance;
+    private boolean ignoreChance = false;
+
+    public BountyEvent(World bountyEventWorld, double chance) {
+        this.bountyEventWorld = bountyEventWorld;
+        this.chance = chance;
+        this.chanceRunnerTask = chanceRunner().runTaskTimer(plugin, 20L, 20L * 15);
     }
-
-    @Override
-    public void onEventCountdownStart() {
-
+    private BukkitRunnable chanceRunner() {
+        return new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!instanceIsRunning && !isRunning && bountyEventWorld.getPlayers().size() >= 2)
+                if (ignoreChance || ThreadLocalRandom.current().nextDouble() < chance)
+                    runBounty();
+            }
+        };
     }
-
-    @Override
-    public void onEventStart() {
-        if (getPlayers().isEmpty() || Bukkit.getOnlinePlayers().isEmpty())
-            return;
-        Collection<Player> possiblePlayers = new ArrayList<>(getPlayers());
-        hunter = possiblePlayers.stream().skip(randomInt(possiblePlayers.size())).findFirst().orElse(null);
-        possiblePlayers.remove(hunter);
-        target = possiblePlayers.stream().skip(randomInt(possiblePlayers.size())).findFirst().orElse(null);
-        hunter.sendTitle(bold(ChatColor.DARK_RED) + "Kill " + bold(ChatColor.GOLD) + target.getName(), "Remember: It might not be worth it.", 100, 60, 100);
-        hunter.playSound(hunter.getLocation(), JohnUtility.randomSoundWhoContains("MOOD"), 0.6f, 1f);
-    }
-
-    @Override
-    public void everyEventTick() {
-
-    }
-
-    @Override
-    public void onCountdownAnnounce(int secondsLeft) {
-
-    }
-
-    @Override
-    public void onEventEndCountdownStart() {
-
-    }
-
-    @Override
-    public void onEventEnd() {
+    private void runBounty() {
+        isRunning = true;
+        instanceIsRunning = true;
 
     }
 }

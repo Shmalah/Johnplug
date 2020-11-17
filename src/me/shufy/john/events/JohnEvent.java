@@ -153,6 +153,7 @@ public abstract class JohnEvent {
     }
     private void endEvent() {
         this.duration = this.eventDuration; // reset event timer back to original
+
         new BukkitRunnable() {
             @Override
             public void run() {

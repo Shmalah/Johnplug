@@ -46,6 +46,8 @@ public class MlgEventListener implements Listener {
     }
     @EventHandler
     public void onPlayerDeath (PlayerDeathEvent e) {
+        if (e.getDeathMessage().contains("John"))
+            return;
         if (JohnEvent.isEventInstanceRunning()) {
             if (JohnEvent.getEventInstanceName().equals("MlgEvent")) {
                 if (!((MlgEvent) JohnEvent.getEventInstance()).deathList.contains(e.getEntity())) {
