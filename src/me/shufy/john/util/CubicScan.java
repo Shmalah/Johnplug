@@ -1,8 +1,6 @@
 package me.shufy.john.util;
 
-import me.shufy.john.items.JohnItem;
-import me.shufy.john.items.JohnItemListener;
-import me.shufy.john.items.weapons.JohnItemAbilities;
+import me.shufy.john.survival.items.weapons.JohnItemAbilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
