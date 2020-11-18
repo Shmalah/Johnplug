@@ -218,6 +218,8 @@ public final class JohnUtility {
         }
     }
     public static boolean loreContains(ItemStack item, String contains) {
+        if (item == null)
+            return false;
         if (!item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().isEmpty())
             return false;
         for (String line : item.getItemMeta().getLore()) {

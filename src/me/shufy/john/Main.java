@@ -6,6 +6,7 @@ import me.shufy.john.events.bounty.BountyEventListener;
 import me.shufy.john.events.mlg.MlgEventListener;
 import me.shufy.john.items.JohnItemListener;
 import me.shufy.john.items.egg.JohnEggListener;
+import me.shufy.john.items.johnmask.JohnMaskListener;
 import me.shufy.john.items.johnrod.JohnRodListener;
 import me.shufy.john.items.sand.JohnSandListener;
 import me.shufy.john.items.stupid.boat.JohnBoatListener;
@@ -31,6 +32,7 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JohnSandListener(), this);
         getServer().getPluginManager().registerEvents(new JohnRodListener(), this);
         getServer().getPluginManager().registerEvents(new JohnEggListener(), this);
+        getServer().getPluginManager().registerEvents(new JohnMaskListener(), this);
 
         // john
         Npc.initializeNpcs();

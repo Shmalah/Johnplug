@@ -4,6 +4,7 @@ import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.events.JohnEvent;
 import me.shufy.john.events.bounty.BountyEvent;
 import me.shufy.john.events.mlg.MlgEvent;
+import me.shufy.john.items.johnmask.JohnMask;
 import me.shufy.john.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
@@ -54,8 +55,11 @@ public class DebugCommands implements CommandExecutor {
                             break;
                         case "event":
                             BountyEvent bountyEvent = new BountyEvent(player.getWorld(), 0.1d);
-
                             bountyEvent.setIgnoreChance(true);
+                            break;
+                        case "mask":
+                            JohnMask mask = new JohnMask();
+                            player.getInventory().addItem(mask.getItemStack());
                             break;
                         case "eventdebug":
                             if (JohnEvent.isEventInstanceRunning()) {

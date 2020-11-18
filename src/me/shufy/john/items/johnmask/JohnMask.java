@@ -21,8 +21,9 @@ public class JohnMask extends GeneralJohnItem {
         maskMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
         maskMeta.setLore(new ArrayList<String>() {{
             add (bold(ChatColor.GOLD) + "The John Mask -- Protect yourself from John.. At least for now.");
+            add (ChatColor.GOLD + "Ineffective at non-random john appearances. E.g. losing an event");
         }});
         mask.setItemMeta(maskMeta);
-        return null;
+        return mask;
     }
 }
