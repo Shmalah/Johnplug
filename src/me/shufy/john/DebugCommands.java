@@ -17,7 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class DebugCommands implements CommandExecutor {
 
-    public static boolean debugMode = false;
+    public static boolean debugMode = true;
 
     JohnNpc john;
 

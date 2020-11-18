@@ -16,10 +16,15 @@ import me.shufy.john.survival.items.johnmask.JohnMaskListener;
 import me.shufy.john.survival.items.johnrod.JohnRodListener;
 import me.shufy.john.survival.items.sand.JohnSandListener;
 import me.shufy.john.survival.items.stupid.boat.JohnBoatListener;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
+
+import static me.shufy.john.util.JohnUtility.bold;
 
 public class Main extends JavaPlugin {
     @Override
@@ -62,6 +67,11 @@ public class Main extends JavaPlugin {
                 JohnItemListener.abilityCooldowns.putIfAbsent(player, player.getGameMode().equals(GameMode.CREATIVE) ? 0 : 11);
             });
         }
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.sendMessage(bold(ChatColor.RED) + "Using John's World v0.1.3");
+        }
+
     }
     @Override
     public void onDisable() {
