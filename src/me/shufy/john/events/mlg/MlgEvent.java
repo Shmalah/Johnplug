@@ -94,23 +94,28 @@ public class MlgEvent extends JohnEvent {
 
     @Override
     public void onEventEnd() {
-
         broadcastMsg(bold(ChatColor.YELLOW) + "THE EVENT HAS CONCLUDED. LOSERS WILL BE PUNISHED.");
         broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL, new SoundInfo(1f, 1f));
 
         for (Player player : deathList) {
-
             if (!player.isOnline()) {
                 johnBan(player, 30);
                 continue;
             }
 
             player.getWorld().strikeLightning(player.getLocation());
+            player.sendMessage(bold(ChatColor.DARK_RED) + "JOHN IS DISAPPOINTED IN YOU FOR LOSING THE EVENT.");
             for (int i = 0; i < 5; i++)
                 player.getWorld().strikeLightningEffect(player.getLocation());
 
             JohnNpc.johnGoAfterPlayer(player, randomInt(5, 15), randomInt(200, 300));
+        }
 
+        for (Player player : winList) {
+            if (randomChanceNoDebug(0.1d)) {
+                player.getInventory().addItem(new ItemStack(randomMaterialWhoContains("DIAMOND")));
+                player.sendMessage(bold(ChatColor.GREEN) + "You got lucky! John has rewarded you for your efforts.");
+            }
         }
 
         for (Player player : getPlayers()) {

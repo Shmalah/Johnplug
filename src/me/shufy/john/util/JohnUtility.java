@@ -194,6 +194,10 @@ public final class JohnUtility {
 
     public static final Main plugin = Main.getPlugin(Main.class);
 
+    public static boolean randomChanceNoDebug(double percentChance) {
+        return ThreadLocalRandom.current().nextDouble() < percentChance;
+    }
+
     public static void johnBan(Player player, int seconds) {
         if (seconds <= 0)
             return;
