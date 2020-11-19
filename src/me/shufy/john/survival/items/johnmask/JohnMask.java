@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import static me.shufy.john.util.JohnUtility.bold;
 
 public class JohnMask extends GeneralJohnItem {
+
+    // TODO make random-john behave differently when a user is wearing the john mask
+    // TODO make john mask break eventually
+
     @Override
     public ItemStack getItemStack() {
         ItemStack mask = new ItemStack(Material.CARVED_PUMPKIN);

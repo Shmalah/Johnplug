@@ -4,6 +4,7 @@ package me.shufy.john.events;
 import me.shufy.john.Main;
 import me.shufy.john.events.bounty.BountyEvent;
 import me.shufy.john.util.SoundInfo;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.bold;
 
@@ -56,6 +58,7 @@ public abstract class JohnEvent {
     }
 
     private void chanceRunner() {
+        Bukkit.getLogger().log(Level.INFO, "Initialized " + this.name);
         new BukkitRunnable() {
             @Override
             public void run() {

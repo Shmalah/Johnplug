@@ -17,8 +17,11 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
 
 public class JohnNpc {
 
@@ -211,6 +214,23 @@ public class JohnNpc {
                 move(vDelta.getX(), vDelta.getY(), vDelta.getZ()); // move toward your victim, john. It's time.
             }
         }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
+    }
+
+    public static void johnGoAfterPlayer(Player player, int spawnRadius, int ticksToLive) {
+        JohnNpc npc = new JohnNpc(randomLocationNearPlayer(player, spawnRadius));
+        npc.spawn(Collections.singleton(player));
+        npc.targetPlayer(player);
+        new BukkitRunnable() {
+            private int ticks = 0;
+            @Override
+            public void run() {
+                if (player.isDead() || ticks > ticksToLive) {
+                    npc.destroy();
+                    this.cancel();
+                }
+                ticks++;
+            }
+        }.runTaskTimer(Main.getPlugin(Main.class), 0, 1L);
     }
 
     public void attack(Player player) {

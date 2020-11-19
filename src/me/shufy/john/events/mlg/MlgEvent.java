@@ -3,6 +3,7 @@ package me.shufy.john.events.mlg;
 import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.events.JohnEvent;
 import me.shufy.john.player.BlockLogger;
+import me.shufy.john.util.SoundInfo;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -13,12 +14,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
-import static me.shufy.john.util.JohnUtility.bold;
-import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
+import static me.shufy.john.util.JohnUtility.*;
 
 public class MlgEvent extends JohnEvent {
 
@@ -96,53 +94,33 @@ public class MlgEvent extends JohnEvent {
 
     @Override
     public void onEventEnd() {
+
         broadcastMsg(bold(ChatColor.YELLOW) + "THE EVENT HAS CONCLUDED. LOSERS WILL BE PUNISHED.");
-        getPlayers().forEach(player -> {
-            if (deathList.contains(player) && !winList.contains(player)) {
-                if (player.isDead() || !player.isOnline()) {
-                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.RED) + "Ur banned for 30 seconds", null, null);
-                    new BukkitRunnable() {
-                        private int secondsLeft = 30;
-                        @Override
-                        public void run() {
-                            secondsLeft--;
-                            Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.RED) + "Ur banned for " + secondsLeft + " seconds for JOHN LOGGING.", null, null);
-                            player.kickPlayer( bold(ChatColor.RED) + "Ur banned for " + secondsLeft + " seconds for JOHN LOGGING.");
-                            if (secondsLeft == 1) {
-                                Bukkit.getBanList(BanList.Type.NAME).pardon(player.getName());
-                                this.cancel();
-                            }
-                        }
-                    }.runTaskTimer(plugin, 0, 20L);
-                } else {
-                    player.sendMessage(bold(ChatColor.DARK_RED) + "JOHN IS DISAPPOINTED IN YOU FOR LOSING THE EVENT.");
-                    player.getWorld().strikeLightning(player.getLocation());
-                    JohnNpc npc = new JohnNpc(randomLocationNearPlayer(player, 10));
-                    npc.spawn(Collections.singleton(player));
-                    npc.targetPlayer(player);
-                    new BukkitRunnable() {
-                        private int ticks = 0;
-                        @Override
-                        public void run() {
-                            if (player.isDead() || ticks > 200) {
-                                npc.destroy();
-                                this.cancel();
-                            }
-                            ticks++;
-                        }
-                    }.runTaskTimer(plugin, 0, 1L);
-                }
-            } else if (deathList.contains(player) && winList.contains(player)) {
-                Bukkit.getLogger().log(Level.SEVERE, String.format("Player %s is in both winner list and loser list! This isn't supposed to happen.", player.getName()));
-                Bukkit.getLogger().log(Level.INFO, "LOSERS: " + deathList.toString());
-                Bukkit.getLogger().log(Level.INFO, "WINNERS: " + winList.toString());
+        broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL, new SoundInfo(1f, 1f));
+
+        for (Player player : deathList) {
+
+            if (!player.isOnline()) {
+                johnBan(player, 30);
+                continue;
             }
+
+            player.getWorld().strikeLightning(player.getLocation());
+            for (int i = 0; i < 5; i++)
+                player.getWorld().strikeLightningEffect(player.getLocation());
+
+            JohnNpc.johnGoAfterPlayer(player, randomInt(5, 15), randomInt(200, 300));
+
+        }
+
+        for (Player player : getPlayers()) {
             player.getInventory().remove(Material.BUCKET);
             player.getInventory().remove(Material.WATER_BUCKET);
             player.getInventory().remove(Material.LAVA_BUCKET);
-            winList.clear();
-            deathList.clear();
-        });
+        }
+
+        winList.clear();
+        deathList.clear();
     }
 
     public boolean playerInEvent(Player player) {

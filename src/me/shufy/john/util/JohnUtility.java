@@ -201,7 +201,7 @@ public final class JohnUtility {
         if (!playerBanned) {
             // ban player
             Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.BOLD) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING!", null, null);
-            player.kickPlayer(bold(ChatColor.RED) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING WHEN YOU WERE A BOUNTY TARGET");
+            player.kickPlayer(bold(ChatColor.RED) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING");
             new BukkitRunnable() {
                 private int secondsLeft = seconds;
                 @Override
@@ -217,6 +217,7 @@ public final class JohnUtility {
             }.runTaskTimer(plugin, 0, 20L);
         }
     }
+
     public static boolean loreContains(ItemStack item, String contains) {
         if (item == null)
             return false;

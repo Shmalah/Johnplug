@@ -17,7 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class DebugCommands implements CommandExecutor {
 
-    public static boolean debugMode = true;
+    public static boolean debugMode = false;
 
     JohnNpc john;
 
@@ -54,8 +54,27 @@ public class DebugCommands implements CommandExecutor {
                                 john.autoTarget();
                             break;
                         case "event":
-                            BountyEvent bountyEvent = new BountyEvent(player.getWorld(), 0.1d);
-                            bountyEvent.setIgnoreChance(true);
+                            if (args.length > 1)
+                            switch (args[1]) {
+                                case "mlg":
+                                    Main.mlgEvent.setIgnoreChance(!Main.mlgEvent.isIgnoreChance());
+                                    player.sendMessage("Mlg Event ignore chance is now " + (Main.mlgEvent.isIgnoreChance() ? "TRUE" : "FALSE"));
+                                    break;
+                                case "bounty":
+                                    Main.bountyEvent.setIgnoreChance(!Main.bountyEvent.isIgnoreChance());
+                                    player.sendMessage("Bounty Event ignore chance is now " + (Main.mlgEvent.isIgnoreChance() ? "TRUE" : "FALSE"));
+                                    break;
+                                case "disable":
+                                    Main.bountyEvent.setChance(-1);
+                                    Main.mlgEvent.setChance(-1);
+                                    player.sendMessage("Events disabled.");
+                                    break;
+                                case "enable":
+                                    Main.bountyEvent.setChance(0.1d);
+                                    Main.mlgEvent.setChance(0.2d);
+                                    player.sendMessage("Events enabled.");
+                                    break;
+                            }
                             break;
                         case "mask":
                             JohnMask mask = new JohnMask();
