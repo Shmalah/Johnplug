@@ -2,10 +2,6 @@ package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnListener;
 import me.shufy.john.corenpc.JohnNpc;
-import me.shufy.john.events.bounty.BountyEvent;
-import me.shufy.john.events.bounty.BountyEventListener;
-import me.shufy.john.events.mlg.MlgEvent;
-import me.shufy.john.events.mlg.MlgEventListener;
 import me.shufy.john.player.BlockLogger;
 import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
@@ -27,12 +23,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Level;
 
 import static me.shufy.john.util.JohnUtility.bold;
-import static me.shufy.john.util.JohnUtility.getWorldWithMostPlayers;
 
 public class Main extends JavaPlugin {
-
-    public static MlgEvent mlgEvent;
-    public static BountyEvent bountyEvent;
 
     @Override
     public void onEnable() {
@@ -57,8 +49,8 @@ public class Main extends JavaPlugin {
         new SpookerStorm();
 
         // john events
-        getServer().getPluginManager().registerEvents(new MlgEventListener(), this);
-        getServer().getPluginManager().registerEvents(new BountyEventListener(), this);
+       // getServer().getPluginManager().registerEvents(new MlgEventListener(), this);
+       // getServer().getPluginManager().registerEvents(new BountyEventListener(), this);
 
         // john survival / items too
         getServer().getPluginManager().registerEvents(new SurvivalEventHandler(), this);
@@ -78,13 +70,6 @@ public class Main extends JavaPlugin {
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.sendMessage(bold(ChatColor.RED) + "Using John's World v0.1.3");
-        }
-
-        if (!Bukkit.getOnlinePlayers().isEmpty()) {
-            Bukkit.getLogger().log(Level.INFO, "Initializing bounty event");
-            bountyEvent = new BountyEvent(getWorldWithMostPlayers(), 0.1d);
-            Bukkit.getLogger().log(Level.INFO, "Initializing MLG event");
-            mlgEvent = new MlgEvent(getWorldWithMostPlayers(), 15, 0.1d);
         }
 
     }

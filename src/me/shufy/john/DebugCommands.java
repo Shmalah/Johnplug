@@ -4,7 +4,7 @@ import me.shufy.john.corenpc.JohnNpc;
 import me.shufy.john.events.JohnEvent;
 import me.shufy.john.events.bounty.BountyEvent;
 import me.shufy.john.events.mlg.MlgEvent;
-import me.shufy.john.survival.items.johnmask.JohnMask;
+import me.shufy.john.survival.items.johnmask.JohnMaskItem;
 import me.shufy.john.survival.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.ParticleRay;
 import org.bukkit.ChatColor;
@@ -77,7 +77,7 @@ public class DebugCommands implements CommandExecutor {
                             }
                             break;
                         case "mask":
-                            JohnMask mask = new JohnMask();
+                            JohnMaskItem mask = new JohnMaskItem();
                             player.getInventory().addItem(mask.getItemStack());
                             break;
                         case "eventdebug":

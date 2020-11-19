@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import static me.shufy.john.util.JohnUtility.bold;
 
-public class JohnMask extends GeneralJohnItem {
+public class JohnMaskItem extends GeneralJohnItem {
 
     // TODO make random-john behave differently when a user is wearing the john mask
     // TODO make john mask break eventually
@@ -20,6 +20,7 @@ public class JohnMask extends GeneralJohnItem {
     public ItemStack getItemStack() {
         ItemStack mask = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta maskMeta = mask.getItemMeta();
+        assert maskMeta != null;
         maskMeta.setDisplayName(bold(ChatColor.LIGHT_PURPLE) + "John Mask");
         maskMeta.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
         maskMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);

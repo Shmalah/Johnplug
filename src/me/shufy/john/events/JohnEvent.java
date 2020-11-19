@@ -63,19 +63,23 @@ public abstract class JohnEvent {
             @Override
             public void run() {
                 if (ThreadLocalRandom.current().nextDouble() < chance || isIgnoreChance()) {
-                    if (!eventRunning && !eventInstanceRunning && !BountyEvent.isInstanceRunning()) // can't have more than one event happening at once
+                    if (!eventRunning && !eventInstanceRunning && !BountyEvent.isInstanceRunning()) /* can't have more than one event happening at once */
                         runEvent();
+                    else
+                        Bukkit.getLogger().log(Level.INFO, "Skipped event " + JohnEvent.this.name + " because " + (eventRunning ? "this event is running" : (eventInstanceRunning ? "another instance of this event is running" : "there is a bounty event running concurrently")));
                 }
             }
         }.runTaskTimer(plugin, 0, (20L * 10));
     }
 
     private void runEvent() {
+        Bukkit.getLogger().log(Level.INFO, "runEvent() called for event " + this.name);
         eventInstanceRunning = true;
         eventInstanceName = this.name;
         eventInstance = this;
         eventRunning = true;
         if (isEventStartCountdown()) {
+            Bukkit.getLogger().log(Level.INFO, "onEventCountdownStart called for event " + this.name);
             onEventCountdownStart();
             new BukkitRunnable() {
                 private int secondsLeft = 10;
@@ -85,6 +89,7 @@ public abstract class JohnEvent {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
+                                Bukkit.getLogger().log(Level.INFO, "onEventStart called for event " + JohnEvent.this.name);
                                 onEventStart();
                                 startEventTick();
                             }
@@ -121,6 +126,7 @@ public abstract class JohnEvent {
                     if (duration == 10 && ticks % 20 == 0)
                         onEventEndCountdownStart();
                 } else if (duration == 0 && ticks % 20 == 0) {
+                    Bukkit.getLogger().log(Level.INFO, "onEventEnd called for event " + JohnEvent.this.name);
                     onEventEnd();
                     endEvent();
                     this.cancel();
@@ -156,8 +162,8 @@ public abstract class JohnEvent {
         }
     }
     private void endEvent() {
+        Bukkit.getLogger().log(Level.INFO, "endEvent() called for event " + this.name);
         this.duration = this.eventDuration; // reset event timer back to original
-
         new BukkitRunnable() {
             @Override
             public void run() {
