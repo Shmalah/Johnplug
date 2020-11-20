@@ -1,12 +1,18 @@
-package me.shufy.john.util;
+package me.shufy.john.util.john;
 
 import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
+import me.shufy.john.util.structs.SoundInfo;
+import me.shufy.john.util.structs.YawPitch;
+import me.shufy.john.util.world.ParticleRay;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -61,6 +67,80 @@ public final class JohnUtility {
         }
         return closest;
     }
+
+    /**
+     * 
+     * @param origin
+     * <p>The center of the search</p>
+     * @param accuracy
+     * <p>The accuracy of the search. 1 is the best accuracy</p>
+     * @return
+     * <p>The block if found, else null</p>
+     */
+    public static Block explodeSearchBlock(Location origin, Vector vector, Material target, int accuracy) {
+        for (int i = 0; i < 360/accuracy; i++) {
+            RayTraceResult rt = origin.getBlock().rayTrace(origin.getBlock().getLocation(), vector.rotateAroundAxis(upVector(), i).normalize(), 100, FluidCollisionMode.SOURCE_ONLY);
+            if (rt != null) {
+                if (rt.getHitBlock() != null) {
+                    if (rt.getHitBlock().getType().equals(target))
+                        return rt.getHitBlock();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Block findBlockWithMaterialInLOS(Player player, Material material) {
+        for (Block block : player.getLineOfSight(null, 100))
+            if (block.getType().equals(material))
+                return block;
+        return null;
+    }
+
+    public static Block findBlockWithMaterialContainsInLOS(Player player, String contains) {
+        for (Block block : player.getLineOfSight(null, 100))
+            if (block.getType().name().contains(contains.toUpperCase()))
+                return block;
+        return null;
+    }
+
+    public static Block explodeSearchBlockContains(Location origin, Vector vector, String contains, int accuracy) {
+        for (int i = 0; i < 360/accuracy; i++) {
+            // debug
+            ParticleRay particleRay = new ParticleRay(origin,  vector.rotateAroundAxis(upVector(), i), 3, Color.ORANGE, 2);
+            particleRay.draw();
+            RayTraceResult rt = origin.getBlock().rayTrace(origin.getBlock().getLocation(), vector.rotateAroundAxis(upVector(), i), 100, FluidCollisionMode.SOURCE_ONLY);
+            if (rt != null) {
+                if (rt.getHitBlock() != null) {
+                    if (rt.getHitBlock().getType().name().contains(contains.toUpperCase()))
+                        return rt.getHitBlock();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Vector upVector() {
+        return new Vector(0, 1, 0);
+    }
+
+    public List<Block> getBlocks(Location pos1, Location pos2)
+    {
+        if(pos1.getWorld() != pos2.getWorld())
+            return null;
+        World world = pos1.getWorld();
+        List<Block> blocks = new ArrayList<>();
+        int x1 = pos1.getBlockX(), y1 = pos1.getBlockY(), z1 = pos1.getBlockZ();
+        int x2 = pos2.getBlockX(), y2 = pos2.getBlockY(), z2 = pos2.getBlockZ();
+        int lowestX = Math.min(x1, x2), lowestY = Math.min(y1, y2), lowestZ = Math.min(z1, z2);
+        int highestX = lowestX == x1 ? x2 : x1, highestY = lowestX == y1 ? y2 : y1, highestZ = lowestX == z1 ? z2 : z1;
+        for(int x = lowestX; x <= highestX; x++)
+            for(int y = lowestY; x <= highestY; y++)
+                for(int z = lowestZ; x <= highestZ; z++)
+                    blocks.add(world.getBlockAt(x, y, z));
+        return blocks;
+    }
+
     public static Player getClosestPlayerExclusive(Player exFrom) {
         Player closest = getClosestPlayer(exFrom);
         if (closest == null || closest.equals(exFrom)) {
@@ -243,6 +323,9 @@ public final class JohnUtility {
     }
     public static String locationToString(Location location) {
         return location.getX() + " " + location.getY() + " " + location.getZ();
+    }
+    public static Biome getPlayerBiome(Player player) {
+        return player.getWorld().getBiome(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ());
     }
     /*
     public static void sendNmsPackets(Collection<Player> players, EntityPlayer npc, Object[] packetArgs, PacketType... packetTypes) {

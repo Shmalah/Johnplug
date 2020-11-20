@@ -7,6 +7,7 @@ import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
 import me.shufy.john.scare.SpookerStorm;
 import me.shufy.john.survival.SurvivalEventHandler;
+import me.shufy.john.survival.crafting.recipes.john.JohnMask;
 import me.shufy.john.survival.crafting.recipes.tools.PowerAxe;
 import me.shufy.john.survival.items.JohnItemListener;
 import me.shufy.john.survival.items.egg.JohnEggListener;
@@ -22,7 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
 
-import static me.shufy.john.util.JohnUtility.bold;
+import static me.shufy.john.util.john.JohnUtility.bold;
 
 public class Main extends JavaPlugin {
 
@@ -52,9 +53,13 @@ public class Main extends JavaPlugin {
        // getServer().getPluginManager().registerEvents(new MlgEventListener(), this);
        // getServer().getPluginManager().registerEvents(new BountyEventListener(), this);
 
-        // john survival / items too
+        // john survival
         getServer().getPluginManager().registerEvents(new SurvivalEventHandler(), this);
+        //new JohnPeer();
+
+        // john items
         new PowerAxe();
+        new JohnMask();
 
         // player loggers
         getServer().getPluginManager().registerEvents(new BlockLogger(), this);

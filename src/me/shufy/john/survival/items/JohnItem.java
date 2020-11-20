@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import static me.shufy.john.util.JohnUtility.*;
+import static me.shufy.john.util.john.JohnUtility.*;
 
 public class JohnItem {
     String itemName;

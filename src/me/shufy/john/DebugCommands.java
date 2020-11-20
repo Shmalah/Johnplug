@@ -1,12 +1,9 @@
 package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnNpc;
-import me.shufy.john.events.JohnEvent;
-import me.shufy.john.events.bounty.BountyEvent;
-import me.shufy.john.events.mlg.MlgEvent;
-import me.shufy.john.survival.items.johnmask.JohnMaskItem;
+import me.shufy.john.corenpc.chase.JohnChase;
 import me.shufy.john.survival.items.stupid.boat.JohnBoat;
-import me.shufy.john.util.ParticleRay;
+import me.shufy.john.util.world.ParticleRay;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
@@ -53,56 +50,10 @@ public class DebugCommands implements CommandExecutor {
                             if (john != null)
                                 john.autoTarget();
                             break;
+                        case "johnchase":
+                            JohnChase.startAddon();
+                            break;
                         case "event":
-                            if (args.length > 1)
-                            switch (args[1]) {
-                                case "mlg":
-                                    Main.mlgEvent.setIgnoreChance(!Main.mlgEvent.isIgnoreChance());
-                                    player.sendMessage("Mlg Event ignore chance is now " + (Main.mlgEvent.isIgnoreChance() ? "TRUE" : "FALSE"));
-                                    break;
-                                case "bounty":
-                                    Main.bountyEvent.setIgnoreChance(!Main.bountyEvent.isIgnoreChance());
-                                    player.sendMessage("Bounty Event ignore chance is now " + (Main.mlgEvent.isIgnoreChance() ? "TRUE" : "FALSE"));
-                                    break;
-                                case "disable":
-                                    Main.bountyEvent.setChance(-1);
-                                    Main.mlgEvent.setChance(-1);
-                                    player.sendMessage("Events disabled.");
-                                    break;
-                                case "enable":
-                                    Main.bountyEvent.setChance(0.1d);
-                                    Main.mlgEvent.setChance(0.2d);
-                                    player.sendMessage("Events enabled.");
-                                    break;
-                            }
-                            break;
-                        case "mask":
-                            JohnMaskItem mask = new JohnMaskItem();
-                            player.getInventory().addItem(mask.getItemStack());
-                            break;
-                        case "eventdebug":
-                            if (JohnEvent.isEventInstanceRunning()) {
-                                if (JohnEvent.getEventInstance() instanceof MlgEvent) {
-                                    MlgEvent mlgEvent1 = (MlgEvent) JohnEvent.getEventInstance();
-                                    player.sendMessage(mlgEvent1.deathList.toString());
-                                    player.sendMessage(mlgEvent1.winList.toString());
-                                }
-                            } else if (BountyEvent.isInstanceRunning()) {
-                               BountyEvent runningBounty = BountyEvent.getRunningInstance();
-                               if (runningBounty != null) {
-                                   // debug placeholder for later
-                                   player.sendMessage("Bounty Event World: " + runningBounty.getBountyEventWorld().getName());
-                                   player.sendMessage("Hunter: " + runningBounty.getHunter().getName() + ", Bounty/Target: " + runningBounty.getTarget().getName());
-                               }
-                            }
-                            break;
-                        case "eventcollide":
-                            for (int i = 0; i < 50; i++) {
-                                BountyEvent b = new BountyEvent(player.getWorld(), 0.1d);
-                                b.setIgnoreChance(true);
-                                MlgEvent m = new MlgEvent(player.getWorld(), 20, 0.2d);
-                                m.setIgnoreChance(true);
-                            }
                             break;
                         case "particleray":
                             ParticleRay particleRay = new ParticleRay(((Player) commandSender).getEyeLocation(), player.getEyeLocation().getDirection(), 20, Color.RED, 3);

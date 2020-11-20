@@ -11,8 +11,8 @@ import org.bukkit.event.inventory.InventoryType;
 
 import java.util.Arrays;
 
-import static me.shufy.john.util.JohnUtility.bold;
-import static me.shufy.john.util.JohnUtility.loreContains;
+import static me.shufy.john.util.john.JohnUtility.bold;
+import static me.shufy.john.util.john.JohnUtility.loreContains;
 
 public class JohnMaskListener implements Listener {
 

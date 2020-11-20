@@ -1,4 +1,4 @@
-package me.shufy.john.util;
+package me.shufy.john.util.structs;
 
 import java.util.concurrent.ThreadLocalRandom;
 

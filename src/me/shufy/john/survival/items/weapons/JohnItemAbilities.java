@@ -3,7 +3,7 @@ package me.shufy.john.survival.items.weapons;
 import me.shufy.john.Main;
 import me.shufy.john.survival.items.JohnItem;
 import me.shufy.john.survival.items.JohnableItem;
-import me.shufy.john.util.ParticleRay;
+import me.shufy.john.util.world.ParticleRay;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import static me.shufy.john.survival.items.JohnItem.randomMaterialWhichContains;
-import static me.shufy.john.util.JohnUtility.*;
+import static me.shufy.john.util.john.JohnUtility.*;
 import static org.bukkit.ChatColor.RED;
 
 public class JohnItemAbilities implements JohnableItem {

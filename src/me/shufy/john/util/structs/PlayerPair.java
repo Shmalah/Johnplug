@@ -1,4 +1,4 @@
-package me.shufy.john.util;
+package me.shufy.john.util.structs;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

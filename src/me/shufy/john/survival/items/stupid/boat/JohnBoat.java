@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
-import static me.shufy.john.util.JohnUtility.bold;
+import static me.shufy.john.util.john.JohnUtility.bold;
 
 public class JohnBoat extends GeneralJohnItem {
     @Override

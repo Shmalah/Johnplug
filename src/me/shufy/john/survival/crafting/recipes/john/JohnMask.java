@@ -10,8 +10,8 @@ import org.bukkit.inventory.ShapedRecipe;
 
 public class JohnMask extends JohnRecipe {
 
-    public JohnMask(String recipeName) {
-        super(recipeName);
+    public JohnMask() {
+        super("John Mask");
     }
 
     @Override

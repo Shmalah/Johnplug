@@ -6,6 +6,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
+import java.util.logging.Level;
+
 public abstract class JohnRecipe {
     String recipeName;
     public JohnRecipe(String recipeName) {
@@ -14,6 +16,7 @@ public abstract class JohnRecipe {
         ShapedRecipe recipe = recipeShape(new ShapedRecipe(key, resultItem()));
         for (IngredientPair recipeIngredient : recipeIngredients(recipe).getCollection())
             recipe.setIngredient(recipeIngredient.c, recipeIngredient.ingredient);
+        Bukkit.getLogger().log(Level.INFO, "Registering John Recipe \"" + this.recipeName + "\"");
         Bukkit.addRecipe(recipe);
     }
     public abstract ShapedRecipe recipeShape(ShapedRecipe currentRecipe);

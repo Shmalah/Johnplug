@@ -1,4 +1,4 @@
-package me.shufy.john.util;
+package me.shufy.john.util.world;
 
 import org.bukkit.Color;
 import org.bukkit.Location;

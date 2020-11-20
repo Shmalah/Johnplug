@@ -2,7 +2,7 @@ package me.shufy.john.scare;
 
 import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
-import me.shufy.john.util.JohnUtility;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;

@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import static me.shufy.john.util.JohnUtility.loreContains;
+import static me.shufy.john.util.john.JohnUtility.loreContains;
 
 public class JohnListener implements Listener {
     @EventHandler

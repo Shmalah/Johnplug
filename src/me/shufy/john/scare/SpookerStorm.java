@@ -2,7 +2,7 @@ package me.shufy.john.scare;
 
 import me.shufy.john.DebugCommands;
 import me.shufy.john.Main;
-import me.shufy.john.util.JohnUtility;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -17,8 +17,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
-import static me.shufy.john.util.JohnUtility.randomPlayer;
+import static me.shufy.john.util.john.JohnUtility.randomLocationNearPlayer;
+import static me.shufy.john.util.john.JohnUtility.randomPlayer;
 
 public class SpookerStorm {
     public static final Main plugin = Main.getPlugin(Main.class);

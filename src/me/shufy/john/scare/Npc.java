@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Deprecated
 public class Npc {
 
     private static final List<Npc> allNpcs = new ArrayList<>();

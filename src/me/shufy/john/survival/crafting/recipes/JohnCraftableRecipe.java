@@ -7,7 +7,9 @@ import org.bukkit.inventory.ShapedRecipe;
 // for usage with class JohnRecipe..
 
 public interface JohnCraftableRecipe {
+
     /* example usage */
+
     default ShapedRecipe recipeShape(ShapedRecipe currentRecipe) {
         return currentRecipe.shape("123", "456", "789");
     }
@@ -22,4 +24,5 @@ public interface JohnCraftableRecipe {
     default ItemStack resultItem() {
         return new ItemStack(Material.COARSE_DIRT);
     }
+
 }

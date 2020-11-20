@@ -7,8 +7,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static me.shufy.john.util.JohnUtility.loreContains;
-import static me.shufy.john.util.JohnUtility.randomMaterialWhoContains;
+import static me.shufy.john.util.john.JohnUtility.loreContains;
+import static me.shufy.john.util.john.JohnUtility.randomMaterialWhoContains;
 
 public class JohnSandListener implements Listener {
     // WHEN PLAYER USES THE SAND

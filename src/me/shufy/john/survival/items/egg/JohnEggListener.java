@@ -1,6 +1,6 @@
 package me.shufy.john.survival.items.egg;
 
-import me.shufy.john.util.JohnUtility;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static me.shufy.john.util.JohnUtility.randomInt;
+import static me.shufy.john.util.john.JohnUtility.randomInt;
 
 public class JohnEggListener implements Listener {
 

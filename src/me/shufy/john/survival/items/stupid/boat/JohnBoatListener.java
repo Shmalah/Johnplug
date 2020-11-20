@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.shufy.john.util.JohnUtility.closestPlayerToVehicle;
+import static me.shufy.john.util.john.JohnUtility.closestPlayerToVehicle;
 
 public class JohnBoatListener implements Listener {
 

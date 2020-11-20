@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import static me.shufy.john.util.JohnUtility.*;
+import static me.shufy.john.util.john.JohnUtility.*;
 
 public class JohnItemListener implements Listener {
 

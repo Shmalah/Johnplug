@@ -3,7 +3,7 @@ package me.shufy.john.corenpc;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.shufy.john.Main;
-import me.shufy.john.util.JohnUtility;
+import me.shufy.john.util.john.JohnUtility;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import static me.shufy.john.util.JohnUtility.randomLocationNearPlayer;
+import static me.shufy.john.util.john.JohnUtility.randomLocationNearPlayer;
 
 public class JohnNpc {
 
@@ -233,12 +233,16 @@ public class JohnNpc {
         }.runTaskTimer(Main.getPlugin(Main.class), 0, 1L);
     }
 
+    public void swingArm() {
+        for (Player johnPlayer : spawnLocation.getWorld().getPlayers())
+            ((CraftPlayer)johnPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutAnimation(npc, 0)); // 0 = left arm swing
+    }
+
     public void attack(Player player) {
         try {
             if (player.getLocation().distance(getNpc().getBukkitEntity().getLocation()) <= 3) {
                 // swing john arm
-                for (Player johnPlayer : spawnLocation.getWorld().getPlayers())
-                    ((CraftPlayer)johnPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutAnimation(npc, 0)); // 0 = left arm swing
+                swingArm();
                 // do damage
                 player.damage(2.5d, getNpc().getBukkitEntity());
             }
