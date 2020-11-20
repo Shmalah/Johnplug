@@ -1,6 +1,7 @@
 package me.shufy.john.survival.items.johnmask;
 
 import me.shufy.john.general.item.GeneralJohnItem;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -30,5 +31,10 @@ public class JohnMaskItem extends GeneralJohnItem {
         }});
         mask.setItemMeta(maskMeta);
         return mask;
+    }
+
+    @Override
+    public boolean equals(ItemStack other) {
+        return JohnUtility.loreContains(other, "The John Mask -- Protect yourself from John");
     }
 }

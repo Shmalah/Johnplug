@@ -8,6 +8,7 @@ import org.bukkit.inventory.ShapedRecipe;
 
 public interface JohnCraftableRecipe {
 
+    /* !!!!!!!!!!!!!!!! DO NOT IMPLEMENT THIS INTERFACE !!!!!!!!!!!!!!!! */
     /* example usage */
 
     default ShapedRecipe recipeShape(ShapedRecipe currentRecipe) {

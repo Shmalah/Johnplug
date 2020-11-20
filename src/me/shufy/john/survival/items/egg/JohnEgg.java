@@ -1,6 +1,7 @@
 package me.shufy.john.survival.items.egg;
 
 import me.shufy.john.general.item.GeneralJohnItem;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -23,5 +24,10 @@ public class JohnEgg extends GeneralJohnItem {
         eggMeta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 1, true);
         egg.setItemMeta(eggMeta);
         return egg;
+    }
+
+    @Override
+    public boolean equals(ItemStack other) {
+        return JohnUtility.loreContains(other, "John's lovely egg.");
     }
 }

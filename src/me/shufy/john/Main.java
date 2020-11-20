@@ -7,9 +7,12 @@ import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
 import me.shufy.john.scare.SpookerStorm;
 import me.shufy.john.survival.SurvivalEventHandler;
+import me.shufy.john.survival.crafting.recipes.CustomJohnRecipeListener;
+import me.shufy.john.survival.crafting.recipes.john.JohnBoat;
 import me.shufy.john.survival.crafting.recipes.john.JohnMask;
 import me.shufy.john.survival.crafting.recipes.tools.PowerAxe;
 import me.shufy.john.survival.items.JohnItemListener;
+import me.shufy.john.survival.items.common.wood.JohnWoodListener;
 import me.shufy.john.survival.items.egg.JohnEggListener;
 import me.shufy.john.survival.items.johnmask.JohnMaskListener;
 import me.shufy.john.survival.items.johnrod.JohnRodListener;
@@ -43,6 +46,7 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JohnRodListener(), this);
         getServer().getPluginManager().registerEvents(new JohnEggListener(), this);
         getServer().getPluginManager().registerEvents(new JohnMaskListener(), this);
+        getServer().getPluginManager().registerEvents(new JohnWoodListener(), this);
 
         // john
         Npc.initializeNpcs();
@@ -55,10 +59,12 @@ public class Main extends JavaPlugin {
 
         // john survival
         getServer().getPluginManager().registerEvents(new SurvivalEventHandler(), this);
+        getServer().getPluginManager().registerEvents(new CustomJohnRecipeListener(), this);
         //new JohnPeer();
 
         // john items
         new PowerAxe();
+        new JohnBoat();
         new JohnMask();
 
         // player loggers

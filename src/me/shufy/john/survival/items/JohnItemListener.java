@@ -26,7 +26,7 @@ public class JohnItemListener implements Listener {
     /*
     *  do not rely on johnitems list for checking what items are actually present in the server. use johnitemlistener event handlers and COOLDOWNS instead
     */
-    private static ArrayList<JohnItem> johnItems = new ArrayList<>();
+    private static final ArrayList<JohnItem> johnItems = new ArrayList<>();
 
     public static HashMap<Player, Integer> abilityCooldowns = new HashMap<>();
     static BukkitTask cooldownsTimer;

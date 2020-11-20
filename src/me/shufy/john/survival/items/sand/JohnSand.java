@@ -1,6 +1,7 @@
 package me.shufy.john.survival.items.sand;
 
 import me.shufy.john.general.item.GeneralJohnItem;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -20,5 +21,10 @@ public class JohnSand extends GeneralJohnItem {
         }});
         sand.setItemMeta(sandMeta);
         return sand;
+    }
+
+    @Override
+    public boolean equals(ItemStack other) {
+        return JohnUtility.loreContains(other, "John's beloved sand.");
     }
 }

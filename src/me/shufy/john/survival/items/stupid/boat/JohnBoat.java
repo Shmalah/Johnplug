@@ -16,6 +16,12 @@ public class JohnBoat extends GeneralJohnItem {
     public ItemStack getItemStack() {
         return johnBoat();
     }
+
+    @Override
+    public boolean equals(ItemStack other) {
+        return false;
+    }
+
     public static ItemStack johnBoat() {
         ItemStack boat = new ItemStack(Material.ACACIA_BOAT);
         ItemMeta meta = boat.getItemMeta();

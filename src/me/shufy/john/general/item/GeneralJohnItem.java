@@ -8,4 +8,5 @@ public abstract class GeneralJohnItem {
         item = getItemStack();
     }
     public abstract ItemStack getItemStack();
+    public abstract boolean equals(ItemStack other);
 }

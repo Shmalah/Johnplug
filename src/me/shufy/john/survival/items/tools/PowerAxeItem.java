@@ -1,6 +1,7 @@
 package me.shufy.john.survival.items.tools;
 
 import me.shufy.john.general.item.GeneralJohnItem;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -27,5 +28,10 @@ public class PowerAxeItem extends GeneralJohnItem {
         }});
         powerAxe.setItemMeta(powerAxeMeta);
         return powerAxe;
+    }
+
+    @Override
+    public boolean equals(ItemStack other) {
+        return JohnUtility.loreContains(other, "Power Axe");
     }
 }

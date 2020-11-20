@@ -1,6 +1,7 @@
 package me.shufy.john.survival.items.johnrod;
 
 import me.shufy.john.general.item.GeneralJohnItem;
+import me.shufy.john.util.john.JohnUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -22,5 +23,10 @@ public class JohnRod extends GeneralJohnItem {
         johnRodMeta.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
         johnRod.setItemMeta(johnRodMeta);
         return johnRod;
+    }
+
+    @Override
+    public boolean equals(ItemStack other) {
+        return JohnUtility.loreContains(other, "The John Deflector Rod");
     }
 }
