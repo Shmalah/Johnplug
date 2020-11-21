@@ -14,13 +14,14 @@ import static me.shufy.john.util.john.JohnUtility.*;
 public class NewJohnChase {
     public static final Main plugin = Main.getPlugin(Main.class);
     public static boolean ignoreChance;
+    public static double chance;
     public static boolean isRunning;
     public NewJohnChase() {
         isRunning = false;
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (randomChanceNoDebug(0.1d) || ignoreChance) {
+                if (randomChanceNoDebug(chance) || ignoreChance) {
                     if (!isRunning) {
                         chase();
                     }

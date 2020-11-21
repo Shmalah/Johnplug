@@ -1,6 +1,7 @@
 package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnNpc;
+import me.shufy.john.corenpc.chase.NewJohnChase;
 import me.shufy.john.survival.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.world.ParticleRay;
 import org.bukkit.ChatColor;
@@ -49,8 +50,15 @@ public class DebugCommands implements CommandExecutor {
                             if (john != null)
                                 john.autoTarget();
                             break;
-                        case "johnchase":
-
+                        case "chance":
+                            if (args.length > 1) {
+                                try {
+                                    NewJohnChase.chance = Double.parseDouble(args[1]);
+                                    player.sendMessage("Chance set to " + (int)(Math.round(NewJohnChase.chance*100)) + "%");
+                                } catch (Exception ex) {
+                                    player.sendMessage("Invalid arg for /jdb chance. Usage: /jdb change <[double] percent chance>");
+                                }
+                            }
                             break;
                         case "newjohn":
 
