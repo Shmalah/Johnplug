@@ -8,6 +8,8 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.logging.Level;
 
+/* replaced with the more flexible counter-part JohnCustomRecipe */
+@Deprecated
 public abstract class JohnRecipe {
     String recipeName;
     public JohnRecipe(String recipeName) {

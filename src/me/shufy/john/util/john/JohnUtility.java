@@ -286,6 +286,7 @@ public final class JohnUtility {
             // ban player
             Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), bold(ChatColor.BOLD) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING!", null, null);
             player.kickPlayer(bold(ChatColor.RED) + "BANNED FOR " + seconds + " SECONDS FOR JOHN LOGGING");
+            Bukkit.getOnlinePlayers().forEach(pl -> pl.sendMessage(bold(ChatColor.RED) + player.getName() + " just john-logged and got banned for " + seconds + " seconds!! :)"));
             new BukkitRunnable() {
                 private int secondsLeft = seconds;
                 @Override

@@ -1,7 +1,9 @@
 package me.shufy.john;
 
+import me.shufy.john.corenpc.JohnEntity;
 import me.shufy.john.corenpc.JohnListener;
 import me.shufy.john.corenpc.JohnNpc;
+import me.shufy.john.corenpc.chase.NewJohnChase;
 import me.shufy.john.player.BlockLogger;
 import me.shufy.john.scare.Npc;
 import me.shufy.john.scare.Spooker;
@@ -49,6 +51,8 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JohnWoodListener(), this);
 
         // john
+        getServer().getPluginManager().registerEvents(new JohnEntity(), this);
+        new NewJohnChase();
         Npc.initializeNpcs();
         new Spooker();
         new SpookerStorm();
@@ -87,6 +91,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         Npc.deinitializeNpcs();
+        JohnEntity.destroyAll();
         JohnNpc.deinitializeJohns();
     }
 }

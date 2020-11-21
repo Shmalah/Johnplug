@@ -23,6 +23,9 @@ import java.util.logging.Level;
 
 import static me.shufy.john.util.john.JohnUtility.randomLocationNearPlayer;
 
+/**
+ * Not stable!
+ */
 public class JohnNpc {
 
     /*
@@ -215,6 +218,7 @@ public class JohnNpc {
             }
         }.runTaskTimer(Main.getPlugin(Main.class), 20L, 1L);
     }
+
 
     public static void johnGoAfterPlayer(Player player, int spawnRadius, int ticksToLive) {
         JohnNpc npc = new JohnNpc(randomLocationNearPlayer(player, spawnRadius));

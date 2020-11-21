@@ -1,7 +1,6 @@
 package me.shufy.john;
 
 import me.shufy.john.corenpc.JohnNpc;
-import me.shufy.john.corenpc.chase.JohnChase;
 import me.shufy.john.survival.items.stupid.boat.JohnBoat;
 import me.shufy.john.util.world.ParticleRay;
 import org.bukkit.ChatColor;
@@ -51,7 +50,10 @@ public class DebugCommands implements CommandExecutor {
                                 john.autoTarget();
                             break;
                         case "johnchase":
-                            JohnChase.startAddon();
+
+                            break;
+                        case "newjohn":
+
                             break;
                         case "event":
                             break;
